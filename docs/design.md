@@ -216,7 +216,7 @@ Heading `projects.title`, helper line `projects.hint`.
 
 **Star system (SVG, viewBox 340x230):**
 - Center: the **sun** (teal, r = 18, label from `projects.sun`).
-- Orbit rings: 1px `--border` circles for orbits 1, 2, 3, centered on the sun, with radii 45, 75 and 105. Angles: 0° points east and angles run clockwise (SVG coordinates). Adjust the radii here if labels don't fit the viewBox.
+- Orbit rings: 1px `--border` circles for orbits 1, 2, 3, centered on the sun, with radii 42, 68 and 92, so a planet and its label still fit the viewBox at the bottom of orbit 3. Angles: 0° points east and angles run clockwise (SVG coordinates).
 - Planets: every project with status `done` or `in-progress`, placed by `lib/orbit.ts` from `orbit` and `angle`. Size and outline follow section 4.1. Colors: `--text` for featured, `--text-soft` for others.
 - Labels: project name under each planet, 13 viewBox units (so they stay at 12px or more on a 360px screen). **Labels always stay upright**: animate the angle value and recompute x/y; never CSS-rotate a group that contains text.
 - **Orbit motion:** only on screens 1024px+ with a fine pointer. Each orbit turns once every 80 to 160s (different speeds). Motion pauses while the pointer is over the map or any planet button has keyboard focus. On touch devices and under 1024px the map is static (easier tapping).
