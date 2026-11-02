@@ -1,0 +1,205 @@
+{
+  "nav": { "projects": "Projects", "skills": "Skills", "about": "About", "contact": "Contact", "fast": "Fast mode", "lang": "العربية", "menu": "Menu" },
+  "common": { "live": "Live demo", "code": "Code", "follow": "Follow progress", "listView": "List view", "mapView": "Map view", "backToTop": "Back to launch pad", "copy": "Copy", "copied": "Copied", "close": "Close", "skipToContent": "Skip to content" },
+  "hero": {
+    "availability": "Available for immediate start",
+    "title": "Hi, I'm Muhammad. I build web apps people actually use.",
+    "subtitle": "Frontend developer in Cairo. I work with React and TypeScript, and I'm now building full-stack apps with Next.js and Node.js.",
+    "ctaProjects": "See my projects",
+    "ctaCv": "Download CV",
+    "ctaContact": "Contact me",
+    "id": {
+      "label": "EXPLORER ID", "status": "ONLINE", "statusSr": "Status: online", "countdown": ["T-3", "T-2", "T-1"],
+      "role": "Role", "roleValue": "Frontend Developer",
+      "mission": "Mission", "missionValue": "Build clean, reliable web products",
+      "available": "Available", "availableValue": "Immediately",
+      "based": "Based in", "basedValue": "Cairo, Egypt"
+    },
+    "scroll": "Scroll to start the journey"
+  },
+  "projects": {
+    "title": "My universe of projects",
+    "hint": "Each planet is a project. Tap one to see what it does.",
+    "sun": "Me",
+    "kinds": { "fullstack": "Full-stack", "frontend": "Frontend", "backend": "Backend" },
+    "status": { "done": "Done", "in-progress": "In progress", "planned": "Planned" },
+    "labels": { "challenge": "Challenge", "did": "What I did", "built": "What I built", "building": "What I'm building", "screenshots": "Screenshots" },
+    "items": {
+      "nabd-masr": {
+        "name": "Nabd Masr",
+        "summary": "An Arabic news app that shows live Egyptian news by category.",
+        "challenge": "The news API often failed or returned empty results for Arabic categories.",
+        "did": "I designed a \"Smart Query\" with boolean search logic on a broader search endpoint, so each Arabic category returns accurate results instead of errors.",
+        "note": "The live demo is offline: the news API's free plan only accepts requests from localhost, and my attempts to proxy it in production didn't work. The code and screenshots are on GitHub.",
+        "built": [
+          "Responsive Arabic news feed for Egypt using NewsAPI, with category filtering, search and pagination.",
+          "A \"Smart Query\" strategy with boolean search logic that removed recurring HTTP 500 errors and empty results.",
+          "Skeleton loading states, a 500ms search debounce, fallback images, and clear error screens for network failures and API rate limits."
+        ]
+      },
+      "around-the-world": {
+        "name": "Around The World",
+        "summary": "An explorer for 250+ countries, with details for each country and its neighbors.",
+        "challenge": "Clicking a neighboring country sometimes opened the wrong one.",
+        "did": "I switched from matching by name to unique country codes (cca3), and refactored state handling to remove loading flicker.",
+        "built": [
+          "Responsive explorer for 250+ countries using the REST Countries API, with strict TypeScript types for nested API data.",
+          "API responses cached in Local Storage to avoid repeated network requests for returning users."
+        ]
+      },
+      "notenest": {
+        "name": "NoteNest",
+        "summary": "A notes API: create, read, update and delete notes, saved in a database.",
+        "built": [
+          "RESTful API with Node.js and Express.js providing full CRUD operations, with data stored in MongoDB through Mongoose models.",
+          "Custom middleware and centralized error handling for consistent error responses, tested with Postman."
+        ]
+      },
+      "forsa": {
+        "name": "Forsa",
+        "summary": "A job board web app built with Next.js, where candidates browse jobs and apply.",
+        "note": "I'm learning Next.js by building this project, so it changes often.",
+        "building": [
+          "Job listings and job detail pages (done).",
+          "Applying to jobs, an admin dashboard to manage postings, and sign-in with role-based access, backed by a database.",
+          "Later: an AI feature that estimates how well a candidate fits each job."
+        ]
+      },
+      "kanban": {
+        "name": "Kanban Board",
+        "summary": "A task board where you add, edit and move tasks between columns, with light and dark themes.",
+        "built": [
+          "Responsive, accessible task board built from a Frontend Mentor design, with task state managed in Redux Toolkit.",
+          "Pre-filled edit forms, status selection to move tasks, and a light/dark theme driven by CSS variables."
+        ]
+      },
+      "caltrack": {
+        "name": "CalTrack",
+        "summary": "A calorie tracker with a form that reacts to your input in real time.",
+        "built": [
+          "Multi-condition form state and real-time input handled with useReducer and strict TypeScript types.",
+          "Client-side routing with React Router and component-scoped CSS Modules to prevent style conflicts."
+        ]
+      },
+      "portfolio": {
+        "name": "This portfolio",
+        "summary": "The site you're on: bilingual (English and Arabic), accessible, with a contact form that reaches me by email and Telegram.",
+        "built": [
+          "Next.js App Router with full English and Arabic support, including right-to-left layout.",
+          "Interactive SVG star system and skill constellation, each with an accessible list view.",
+          "Contact API route with validation, rate limiting and spam protection, tested with Vitest and Playwright."
+        ]
+      },
+      "wasla": {
+        "name": "Wasla",
+        "summary": "A chat app built with the MERN stack (MongoDB, Express, React, Node.js)."
+      }
+    }
+  },
+  "skills": {
+    "title": "Skills",
+    "hint": "Each star is a skill. Lines connect skills I used together in the same project. Hollow stars are skills I'm still learning. Tap a star.",
+    "usedIn": "Used in",
+    "learning": "Currently learning",
+    "notes": {
+      "nextNote": "I'm learning Next.js now and applying it directly in Forsa and in this portfolio.",
+      "vitestNote": "Learned in the React with TypeScript track, where I wrote many tests.",
+      "figmaNote": "I read and implement Figma designs as a developer. UI/UX scholarship at Nile University."
+    },
+    "groups": {
+      "frontend": "Frontend",
+      "backend": "Backend and APIs",
+      "tools": "Testing, tools and OS",
+      "design": "Design and UI",
+      "learning": "Currently learning",
+      "university": "University coursework"
+    }
+  },
+  "rightNow": {
+    "title": "Right now",
+    "building": "Building",
+    "learning": "Learning",
+    "next": "Next mission",
+    "looking": { "label": "Looking for", "value": "A junior Frontend or Full-Stack role" },
+    "updated": "TODO",
+    "updatedLabel": "Last updated",
+    "comingSoon": "Coming soon"
+  },
+  "about": {
+    "title": "About",
+    "log": [
+      { "label": "LOG 01", "text": "I studied Information Systems at Port Said University (2021 to 2025). My graduation project was HomeTech, a platform for household services such as plumbing, electrical work, carpentry and maintenance. I worked on the frontend, in vanilla JavaScript." },
+      { "label": "LOG 02", "text": "I focused on modern frontend: JavaScript, React and React with TypeScript, including testing with Vitest. I built several React apps, three of them live. Now I'm learning the backend with Node.js, Express and MongoDB, and building full-stack apps with Next.js." },
+      { "label": "LOG 03", "text": "I worked as a sales representative at compuMe (12/2025 to 04/2026), explaining laptop specs in plain language. That experience shapes how I write interfaces and explain technical decisions. In 2026 I joined a UI/UX scholarship at Nile University to strengthen the Figma-to-code workflow." }
+    ],
+    "crewTitle": "How I work",
+    "crew": [
+      "I turn Figma designs into clean, maintainable code.",
+      "I explain technical choices in plain language.",
+      "Management at compuMe recognized my professionalism, reliability and commitment to teamwork and customer service."
+    ],
+    "educationTitle": "Education",
+    "education": [
+      "Bachelor's degree in Information Systems, Port Said University (09/2021 to 07/2025)",
+      "Relevant coursework: Data Structures, Databases, Web Development, Networking Fundamentals, Data Mining, Information Retrieval",
+      "UI/UX Scholarship, Nile University, online (2026): user-centered design and the Figma-to-frontend workflow"
+    ],
+    "certsTitle": "Certifications",
+    "certs": [
+      "React with TypeScript (including testing with Vitest)",
+      "React.js Track",
+      "JavaScript Track (03/2025)",
+      "Interactive Web Design Track (10/2024)",
+      "Programming Fundamentals Track (07/2024)"
+    ],
+    "languagesTitle": "Languages",
+    "languages": ["Arabic: native", "English: professional working proficiency"]
+  },
+  "contact": {
+    "title": "Let's talk",
+    "intro": "Here are the quick answers, so you don't have to ask.",
+    "quick": [
+      { "label": "Availability", "value": "Immediate start" },
+      { "label": "Based in", "value": "Cairo, Egypt" },
+      { "label": "Languages", "value": "Arabic (native), English (professional)" },
+      { "label": "Military status", "value": "Exempted" }
+    ],
+    "actions": { "email": "Email", "linkedin": "LinkedIn", "whatsapp": "WhatsApp", "github": "GitHub", "open": "Open", "copyEmail": "Copy" },
+    "form": {
+      "title": "Or send a signal",
+      "name": "Your name",
+      "contact": "Email or WhatsApp number (so I can reply)",
+      "message": "Your message",
+      "namePh": "Sara from Acme",
+      "contactPh": "sara@acme.com",
+      "messagePh": "We'd love to chat about a junior role",
+      "send": "Send signal",
+      "sending": "Sending...",
+      "success": "Signal received. I'll reply soon.",
+      "errName": "Enter your name first",
+      "errContact": "Add an email or number so I can reply",
+      "errMessage": "Write a short message first (at least 10 characters)",
+      "errSend": "Couldn't send. Please email me directly at",
+      "errRate": "Too many messages. Please try again in a few minutes."
+    }
+  },
+  "fast": {
+    "title": "Quick summary",
+    "military": "Military status: Exempted",
+    "topProjects": "Top projects",
+    "inProgress": "In progress",
+    "skills": "Skills",
+    "experience": "Experience and education",
+    "experienceItems": [
+      "Sales Representative, compuMe, Cairo (12/2025 to 04/2026)",
+      "B.Sc. Information Systems, Port Said University (2025)",
+      "UI/UX Scholarship, Nile University (2026)"
+    ],
+    "contact": "Contact",
+    "full": "See the full interactive portfolio",
+    "back": "Back to full site"
+  },
+  "footer": { "built": "Built with Next.js, TypeScript and Tailwind.", "lastCommit": "Last commit", "hint": "Press Ctrl/Cmd + K" },
+  "notFound": { "title": "Lost in space", "text": "This page doesn't exist.", "back": "Back to launch pad" },
+  "meta": { "title": "Muhammad Nassar | Frontend Developer", "description": "Frontend developer in Cairo. React and TypeScript, now building full-stack apps with Next.js and Node.js. Available for immediate start." }
+}

@@ -9,7 +9,7 @@
 
 ## 0. Working agreement (for the agent)
 
-- **Do not upgrade or add major dependencies.** The owner scaffolds the project first (section 2). Use the versions in `package.json`. If something you need is missing, ask.
+- **Do not upgrade dependencies or add unlisted ones.** The owner scaffolds the project first (section 2). Use the versions in `package.json`. Packages listed in section 2 are pre-approved: install each with `pnpm add <name>` (no version number) in the step that needs it. If you need anything else, ask.
 - **Work in small steps.** After each step of Phase 1 (section 17): run typecheck, lint and tests, commit with a clear message, then **stop** and summarize what changed and what to check in the browser. Wait for the owner before continuing.
 - **When the spec is unclear or contradicts itself, ask.** Do not guess.
 - **No hard-coded user-facing text** in components. All strings come from `messages/{locale}.json`; all facts come from `content/*.ts`.
@@ -33,6 +33,7 @@ Tone: calm, organized, precise, honest. The fantasy layer must never block or de
 The owner runs `create-next-app` (TypeScript, Tailwind, App Router, ESLint) before handing the repo to the agent. Use those versions.
 
 - **Next.js 15 or newer** (App Router) + **TypeScript** (strict). Note: in Next.js 15+, route `params` are async (`const { locale } = await params`).
+- **Cache Components stay on** (`cacheComponents` and `partialPrefetching` in `next.config.ts`). Consequences: the root layout must export `generateStaticParams`; route segment `revalidate`, `dynamic` and `runtime` exports are not allowed; cached data uses `use cache` with `cacheLife`; `new Date()` and `Date.now()` must not run in the prerendered shell (use a client component, or `<Suspense>` with `connection()`); routes stay mounted but hidden after navigation, so transient UI (mobile menu, image dialog) must reset when hidden.
 - **Tailwind CSS v4**: CSS-first config. Define tokens in `app/globals.css` with `@theme`. There is no `tailwind.config.js` unless the scaffold created one.
 - **Motion** (formerly Framer Motion): package `motion`, import from `motion/react`. No Three.js, no canvas; inline SVG only.
 - **next-intl** for i18n (`en`, `ar`)
@@ -53,12 +54,15 @@ app/
     layout.tsx            # html lang/dir, fonts, Header, Footer, providers, Analytics
     page.tsx              # all sections in order (section 7)
     fast/page.tsx         # Recruiter Fast Mode (section 8)
-    not-found.tsx         # 404 (section 7.9)
+    not-found.tsx         # 404 (section 7.9); unmatched URLs may also need a catch-all route or global-not-found, test in step 8
   api/contact/route.ts    # POST handler (section 10)
   globals.css             # tokens via @theme
   icon.svg                # favicon: teal dot on dark circle
   sitemap.ts
   robots.ts
+proxy.ts                  # next-intl locale detection and redirect (section 11)
+i18n/
+  routing.ts  navigation.ts  request.ts   # next-intl config, locale read from next/root-params
 components/
   Header.tsx  Hero.tsx  ExplorerId.tsx
   projects/StarSystem.tsx  projects/ProjectCard.tsx  projects/ProjectList.tsx
@@ -139,7 +143,7 @@ The owner updates the site by **changing one field**, never by editing component
 
 ## 5. Design tokens
 
-Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globals.css` and expose them through Tailwind v4 `@theme`.
+Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globals.css` and expose them through Tailwind v4 `@theme`. Clear Tailwind's default color palette so only these tokens can be used.
 
 ### Colors
 | Token | Value | Use |
@@ -154,7 +158,7 @@ Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globa
 | `--accent-ink` | `#032B27` | text on accent backgrounds |
 | `--danger` | `#FF8A8A` | form errors only |
 
-**Accent rule (strict):** teal appears only on (a) the sun, (b) primary buttons, (c) the availability dot, (d) selected planet/star ring, (e) link hover and focus rings, (f) small section eyebrow labels, (g) the Explorer ID status text. Nothing else is colored. Status pills ("In progress", "Currently learning") are **not** teal: `--surface` background, 1px `--border`, `--text-soft` text. No gradients, no glows beyond a subtle 0.18 opacity halo on the sun and selected node, no neon.
+**Accent rule (strict):** teal appears only on (a) the sun, (b) primary buttons, (c) the availability dot, (d) selected planet/star ring, (e) link hover and focus rings, (f) small section eyebrow labels, (g) the Explorer ID status text, (h) the "MN" initials in the header, (i) the active nav anchor underline, (j) the ProjectCard start border and the highlight ring on a selected card, (k) the action words in Contact. Nothing else is colored. Status pills ("In progress", "Currently learning") are **not** teal: `--surface` background, 1px `--border`, `--text-soft` text. No gradients, no glows beyond a subtle 0.18 opacity halo on the sun and selected node, no neon.
 
 ### Typography
 - Headings: Inter 500. Body: Inter 400. Arabic: IBM Plex Sans Arabic (same weights).
@@ -187,7 +191,7 @@ Order: **Header, Hero, Projects, Skills, Right now, About, Contact, Footer.**
 ### 7.1 Header (sticky)
 - Start side: initials mark "MN" in a 32px circle (`--surface`, text `--accent`) + name text (hidden under 400px).
 - Center (desktop): anchors Projects, Skills, About, Contact.
-- End side: availability pill (teal dot + `hero.availability`, shown on 640px+; dot only below), **Fast mode** button (outlined), **AR / EN** toggle.
+- End side: availability pill (teal dot + `hero.availability`, shown on 640px+; dot only below), **Fast mode** button (outlined), language toggle (label from `nav.lang`: "العربية" on English pages, "English" on Arabic pages).
 - Mobile: logo, Fast mode, lang toggle, and a menu button that opens a full-width sheet with the anchors.
 - Behavior: background `--bg` at 80% with backdrop blur, 1px bottom border; hides on scroll down, shows on scroll up. Active anchor gets a teal underline.
 
@@ -198,7 +202,7 @@ Layout (mobile single column; desktop two columns with the Explorer ID on the en
 1. Availability pill: teal dot + `hero.availability`.
 2. H1: `hero.title`.
 3. Subtext: `hero.subtitle` (soft color, max-width 560px).
-4. Two buttons: primary teal **See my projects** (scrolls to `#projects`), secondary outlined **Download CV** (`site.cv`). Under 400px, stack them vertically.
+4. Two buttons: primary teal **See my projects** (scrolls to `#projects`), secondary outlined **Download CV** (`site.cv`). Under 400px, stack them vertically. Below them, a text link `hero.ctaContact` to `#contact`.
 5. **Explorer ID card** (`--surface`, 1px border, 12px radius): top row has `hero.id.label` (mono, muted) on the start side and a **status text** (mono, teal) on the end side. Below: a 52px circle with initials "MN" (or `public/photo.jpg` if it exists) and a 2-column definition list: Role / Mission / Available / Based in.
 6. Scroll hint: `hero.scroll` with a small down arrow.
 
@@ -212,9 +216,9 @@ Heading `projects.title`, helper line `projects.hint`.
 
 **Star system (SVG, viewBox 340x230):**
 - Center: the **sun** (teal, r = 18, label from `projects.sun`).
-- Orbit rings: 1px `--border` circles for orbits 1, 2, 3.
+- Orbit rings: 1px `--border` circles for orbits 1, 2, 3, centered on the sun, with radii 45, 75 and 105. Angles: 0° points east and angles run clockwise (SVG coordinates). Adjust the radii here if labels don't fit the viewBox.
 - Planets: every project with status `done` or `in-progress`, placed by `lib/orbit.ts` from `orbit` and `angle`. Size and outline follow section 4.1. Colors: `--text` for featured, `--text-soft` for others.
-- Labels: project name under each planet, 12px. **Labels always stay upright**: animate the angle value and recompute x/y; never CSS-rotate a group that contains text.
+- Labels: project name under each planet, 13 viewBox units (so they stay at 12px or more on a 360px screen). **Labels always stay upright**: animate the angle value and recompute x/y; never CSS-rotate a group that contains text.
 - **Orbit motion:** only on screens 1024px+ with a fine pointer. Each orbit turns once every 80 to 160s (different speeds). Motion pauses while the pointer is over the map or any planet button has keyboard focus. On touch devices and under 1024px the map is static (easier tapping).
 - Selected planet: teal 1px ring. Selection shows details **below the map** on mobile and beside it on desktop (never a tooltip), in a `ProjectCard`.
 - **List view toggle:** the same projects as stacked `ProjectCard`s.
@@ -235,7 +239,7 @@ Heading `skills.title`, helper `skills.hint`.
 - SVG constellation (viewBox 340x260) of all skills with `star: true`. Positions are fixed `x`/`y` values in `content/skills.ts`; the agent chooses balanced positions once and stores them there (no runtime layout, no layout shift).
 - Star appearance and edges follow section 4.2. Lines: 1px `--border`. Selected star: teal ring.
 - Interaction through overlaid HTML buttons (section 6).
-- **SkillCard** below/beside: skill name, "Currently learning" pill if `learning`, **"Used in"** (project names, each a button that selects that project in the star system and scrolls to `#projects`), and the optional note.
+- **SkillCard** below/beside: skill name, "Currently learning" pill if `learning`, **"Used in"** (project names, each a button), and the optional note. In map view, the button selects that project in the star system and scrolls to `#projects`. In list view, it stays in list view, scrolls to that project's card and highlights it; it never switches to the map.
 - **No skill levels, no percentages, no progress bars.** Evidence and honest status only.
 - Below the constellation: **SkillGroups**, a plain scannable list of all skills grouped by `group`, in this order: Frontend, Backend and APIs, Testing/tools/OS, Design and UI, **Currently learning** (all `learning` skills, regardless of group), **University coursework** (all `studied` skills). Chips, no colors. This is for HR and ATS scanning.
 - List view toggle shows only SkillGroups.
@@ -254,13 +258,13 @@ Heading `contact.title`, intro `contact.intro`.
 
 1. **Quick answers** (2x2 grid of small `--surface` cards) from `contact.quick`.
 2. **One-tap actions** (rows with icon, label and a teal action word): **Email** (copy to clipboard with "Copied" feedback), **LinkedIn** (opens), **WhatsApp** (opens `site.whatsapp`), **GitHub** (opens). Do not print the raw phone number as visible text.
-3. **Message form** (`contact.form`): fields Name, "Email or WhatsApp number", Message (3 rows). Use a real `<form onSubmit>` with `preventDefault`, labels linked to inputs, inline validation messages under each field, and a status line with `aria-live="polite"`. Never `alert()`. States: idle, sending (button disabled, `form.sending`), success (`form.success`), error (`form.errSend` + the email + a copy button).
+3. **Message form** (`contact.form`): fields Name, "Email or WhatsApp number", Message (3 rows). Use a real `<form onSubmit>` with `preventDefault`, labels linked to inputs, inline validation messages under each field, and a status line with `aria-live="polite"`. Never `alert()`. States: idle, sending (button disabled, `form.sending`), success (`form.success`), error (`form.errSend` + the email + a copy button; on a `429` response, the error state shows `form.errRate` instead).
 4. Honeypot hidden field named `website` (section 10).
 
 ### 7.8 Footer
 - Start: `footer.built` and `© {year} Muhammad Nassar`.
 - Center: social links (GitHub, LinkedIn, Figma, X).
-- End: **Last activity on GitHub:** `footer.lastCommit` + relative time (e.g. "2 hours ago"), formatted with `Intl.RelativeTimeFormat` in the current locale. Data from `lib/github.ts` (public events or latest repo `pushed_at` for `site.github_user`, server-side fetch with `revalidate: 3600`, optional `GITHUB_TOKEN`). If the request fails, hide the line silently.
+- End: **Last activity on GitHub:** `footer.lastCommit` + relative time (e.g. "2 hours ago"), formatted with `Intl.RelativeTimeFormat` in the current locale. Data from `lib/github.ts` (public events or latest repo `pushed_at` for `site.github_user`, server-side fetch in a `use cache` function with a one-hour `cacheLife`, optional `GITHUB_TOKEN`). If the request fails, hide the line silently, and do not cache the failure for the hour. The year and the relative time are computed outside the prerendered shell (section 2).
 - `common.backToTop` button (scrolls to top).
 - Phase 2 only: `footer.hint` on desktop fine-pointer devices.
 
@@ -315,10 +319,10 @@ Result:
 - Both failed: `502 { ok: false }` (the UI shows the email fallback).
 - Never return provider errors or secrets to the client. Log errors server-side only.
 
-Environment variables (document in `.env.example`, never commit real values):
+Environment variables (document in `.env.example`, never commit real values; `.gitignore` needs `!.env.example`):
 ```
 RESEND_API_KEY=
-CONTACT_TO_EMAIL=na55ar.swe@gmail.com
+CONTACT_TO_EMAIL=n3ssar.swe@gmail.com
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 UPSTASH_REDIS_REST_URL=
@@ -329,13 +333,13 @@ NEXT_PUBLIC_SITE_URL=
 
 ## 11. i18n and RTL
 
-- Locales `en`, `ar`. Routes `/en` and `/ar`. Root `/` redirects by `Accept-Language` (Arabic if it starts with `ar`, else English). The language toggle preserves the current hash.
+- Locales `en`, `ar`. Routes `/en` and `/ar`. Root `/` redirects using next-intl's locale detection in `proxy.ts`: it picks from the whole `Accept-Language` list, remembers the last locale in the `NEXT_LOCALE` session cookie, and falls back to English. The language toggle preserves the current hash.
 - `<html lang dir>`: `dir="rtl"` for Arabic.
 - **Tailwind logical utilities only:** `ms-*`, `me-*`, `ps-*`, `pe-*`, `start-*`, `end-*`, `text-start`, `text-end`, `border-s`, `border-e`, `rounded-s`, `rounded-e`. Never `ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`, `text-right`.
 - Mirror directional icons (arrows, chevrons) in RTL.
 - The star system and constellation SVGs are **not mirrored**; only their text labels and cards follow the direction.
 - Technical terms stay in English inside Arabic text; wrap them in `<bdi>` where needed. Western digits (0-9) in both languages.
-- Arabic body line-height 1.8.
+- Arabic body line-height 1.8. Arabic pages use IBM Plex Sans Arabic first, with Inter for Latin text.
 
 ## 12. Non-translatable data (`content/*.ts`)
 
@@ -344,7 +348,7 @@ NEXT_PUBLIC_SITE_URL=
 export const site = {
   name: "Muhammad Nassar",
   initials: "MN",
-  email: "na55ar.swe@gmail.com",
+  email: "n3ssar.swe@gmail.com",
   whatsapp: "https://wa.me/201067376362",
   links: {
     github: "https://github.com/N3ssar",
@@ -506,6 +510,7 @@ Copy as is. Strings marked `TODO` are for the owner.
     "subtitle": "Frontend developer in Cairo. I work with React and TypeScript, and I'm now building full-stack apps with Next.js and Node.js.",
     "ctaProjects": "See my projects",
     "ctaCv": "Download CV",
+    "ctaContact": "Contact me",
     "id": {
       "label": "EXPLORER ID", "status": "ONLINE", "statusSr": "Status: online", "countdown": ["T-3", "T-2", "T-1"],
       "role": "Role", "roleValue": "Frontend Developer",
@@ -717,6 +722,7 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
     "subtitle": "مطوّر Frontend من القاهرة. أعمل بـ React وTypeScript، وأبني الآن تطبيقات Full-Stack بـ Next.js وNode.js.",
     "ctaProjects": "شاهد مشاريعي",
     "ctaCv": "حمّل السيرة الذاتية",
+    "ctaContact": "تواصل معي",
     "id": {
       "label": "EXPLORER ID", "status": "ONLINE", "statusSr": "الحالة: متصل", "countdown": ["T-3", "T-2", "T-1"],
       "role": "الدور", "roleValue": "مطوّر Frontend",
@@ -933,11 +939,11 @@ The repo itself is a code sample a reviewer will open. Treat it that way.
 - `/en/fast` renders top projects.
 - Contact form shows inline errors on empty submit (API mocked).
 
-**CI (`.github/workflows/ci.yml`):** on push and pull request: install, typecheck, lint, unit tests, `next build`, Playwright.
+**CI (`.github/workflows/ci.yml`):** on push and pull request: install, typecheck (`next typegen && tsc --noEmit`, because route types are generated), lint, unit tests, `next build`, Playwright. Step 1 starts with typecheck and lint; later steps add the rest.
 
 **README.md:** what the site is, live link, how to run locally, env vars, and a short "Decisions" section (why a status system, why computed edges, why SVG with HTML button overlays, how RTL is handled).
 
-**CLAUDE.md:** two lines: "Read docs/design.md before any change. Follow its working agreement (section 0)."
+**CLAUDE.md:** imports `AGENTS.md`, points to this file as the single source of truth, and states the working agreement, the `pnpm add` rule and the rule to read current package docs.
 
 ## 16. Acceptance checklist
 
@@ -977,14 +983,14 @@ The task is done only when every item is true.
 ## 17. Build phases
 
 **Phase 1:** everything above except the terminal. Steps (commit and stop after each, per section 0):
-1. Tokens, fonts, layout shell, i18n scaffolding (`/en`, `/ar`, redirect, RTL), CI with typecheck and lint.
-2. Content files and `lib/status.ts`, `lib/orbit.ts`, `lib/constellation.ts` with their unit tests.
+1. Tokens, fonts, layout shell, i18n scaffolding (`/en`, `/ar`, redirect, RTL), full `messages/*.json`, CI with typecheck and lint.
+2. `content/*.ts`, `TODO.md`, and `lib/status.ts`, `lib/orbit.ts`, `lib/constellation.ts` with their unit tests.
 3. Header and Hero (with Explorer ID and countdown).
 4. Projects: star system, ProjectCard, list view.
 5. Skills: constellation, SkillCard, SkillGroups.
 6. Right now and About.
 7. Contact UI, then API route with tests.
-8. Footer (GitHub activity), 404, Fast mode.
+8. Footer (GitHub activity), 404, `app/icon.svg` (and delete the scaffold's `app/favicon.ico`), Fast mode.
 9. SEO, analytics, Playwright tests, README, QA against section 16.
 
 **Phase 2 (after Phase 1 is deployed and verified): terminal.**
