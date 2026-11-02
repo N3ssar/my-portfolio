@@ -12,7 +12,7 @@
 - **Do not upgrade dependencies or add unlisted ones.** The owner scaffolds the project first (section 2). Use the versions in `package.json`. Packages listed in section 2 are pre-approved: install each with `pnpm add <name>` (no version number) in the step that needs it. If you need anything else, ask.
 - **Work in small steps.** After each step of Phase 1 (section 17): run typecheck, lint and tests, commit with a clear message, then **stop** and summarize what changed and what to check in the browser. Wait for the owner before continuing.
 - **When the spec is unclear or contradicts itself, ask.** Do not guess.
-- **No hard-coded user-facing text** in components. All strings come from `messages/{locale}.json`; all facts come from `content/*.ts`.
+- **No hard-coded user-facing text** in components. All strings come from `messages/{locale}.json`; all facts come from `content/*.ts`. Server components translate and pass labels to client components as props, so messages stay out of the browser bundle.
 
 ## 1. Goal and audience
 
@@ -64,7 +64,7 @@ proxy.ts                  # next-intl locale detection and redirect (section 11)
 i18n/
   routing.ts  navigation.ts  request.ts   # next-intl config, locale read from next/root-params
 components/
-  Header.tsx  Hero.tsx  ExplorerId.tsx
+  Header.tsx  HeaderShell.tsx  Hero.tsx  ExplorerId.tsx  ExplorerStatus.tsx
   projects/StarSystem.tsx  projects/ProjectCard.tsx  projects/ProjectList.tsx
   skills/Constellation.tsx  skills/SkillCard.tsx  skills/SkillGroups.tsx
   RightNow.tsx  About.tsx  Contact.tsx  Footer.tsx
@@ -189,10 +189,10 @@ Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globa
 Order: **Header, Hero, Projects, Skills, Right now, About, Contact, Footer.**
 
 ### 7.1 Header (sticky)
-- Start side: initials mark "MN" in a 32px circle (`--surface`, text `--accent`) + name text (hidden under 400px).
+- Start side: initials mark "MN" in a 32px circle (`--surface`, text `--accent`) + name text (hidden under 480px and from 640px to 767px, where it doesn't fit whole).
 - Center (desktop): anchors Projects, Skills, About, Contact.
 - End side: availability pill (teal dot + `hero.availability`, shown on 640px+; dot only below), **Fast mode** button (outlined), language toggle (label from `nav.lang`: "العربية" on English pages, "English" on Arabic pages).
-- Mobile: logo, Fast mode, lang toggle, and a menu button that opens a full-width sheet with the anchors.
+- Under 1024px: logo, Fast mode, lang toggle, and a menu button that opens a full-width sheet with the anchors.
 - Behavior: background `--bg` at 80% with backdrop blur, 1px bottom border; hides on scroll down, shows on scroll up. Active anchor gets a teal underline.
 
 ### 7.2 Hero
@@ -293,7 +293,7 @@ Rules: print-friendly (`@media print`: white background, black text, no buttons)
 
 - A section with no data shows nothing (never an empty frame), except Right now `TODO` values (section 4.3).
 - Loading states exist only for the GitHub footer line and the contact submit.
-- Under 400px: stack the two hero buttons; hide the header name.
+- Under 400px: stack the two hero buttons.
 - Desktop 1024+: Projects map start side (60%), ProjectCard end side (40%). Same for Skills. Everything else single column.
 
 ## 10. Contact backend (`app/api/contact/route.ts`)

@@ -30,6 +30,7 @@
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
   --container-page: 1080px;
+  --breakpoint-xs: 400px;
 }
 
 @layer base {
@@ -42,8 +43,11 @@
     line-height: 1.6;
   }
 
-  html:lang(ar) body {
+  :lang(ar) {
     font-family: var(--font-plex-arabic), var(--font-sans);
+  }
+
+  html:lang(ar) body {
     line-height: 1.8;
   }
 
@@ -51,6 +55,21 @@
   h2,
   h3 {
     font-weight: 500;
+    line-height: 1.2;
+  }
+
+  html:lang(ar) :is(h1, h2, h3) {
+    line-height: 1.4;
+  }
+
+  section[id] {
+    scroll-margin-top: 72px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   h1 {
@@ -68,5 +87,37 @@
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding-inline: 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .btn-sm {
+    padding-inline: 12px;
+    font-size: 0.875rem;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .btn-outline:hover {
+    color: var(--accent);
   }
 }
