@@ -20,6 +20,10 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Brand assets
+
+`app/apple-icon.png` and `public/og.png` are generated. To regenerate them after changing the brand mark or the text on the image, run `pnpm build`, then `pnpm generate:brand`. It needs Edge or Chrome; set `BROWSER_PATH` if yours isn't found.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

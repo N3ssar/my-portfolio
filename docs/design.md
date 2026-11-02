@@ -162,7 +162,7 @@ Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globa
 **Accent rule (strict):** teal appears only on (a) the sun, (b) primary buttons, (c) the availability dot, (d) selected planet/star ring, (e) link hover and focus rings, (f) small section eyebrow labels, (g) the Explorer ID status text, (h) the brand mark, (i) the active nav anchor underline, (j) the ProjectCard start border and the highlight ring on a selected card, (k) the action words in Contact. Nothing else is colored. Status pills ("In progress", "Currently learning") are **not** teal: `--surface` background, 1px `--border`, `--text-soft` text. No gradients, no glows beyond a subtle 0.18 opacity halo on the sun and selected node, no neon.
 
 ### Brand mark
-An "N" whose two stems are a left square bracket "[" and a right square bracket "]", joined by a diagonal from the top-left corner to the bottom-right corner. `--accent` strokes on a `--surface` rounded square, square line caps, miter joins. The stroke is thicker at 24px and below so it stays legible at 16px. Used as `app/icon.svg`, `app/apple-icon.png`, the header mark, the Explorer ID fallback when there is no photo, and the logo on `og.png`. Component: `components/BrandMark.tsx`.
+An "N" whose two stems are a left square bracket "[" and a right square bracket "]", joined by a diagonal from the top-left corner to the bottom-right corner. `--accent` strokes on a `--surface` rounded square, square line caps, miter joins. The stroke is thicker at 24px and below so it stays legible at 16px. Used as `app/icon.svg`, `app/apple-icon.png`, the header mark, the Explorer ID fallback when there is no photo, and the logo on `og.png`. Component: `components/BrandMark.tsx`. `pnpm generate:brand` regenerates the two PNGs (`scripts/generate-brand-assets.mjs`).
 
 ### Typography
 - Headings: Inter 500. Body: Inter 400. Arabic: IBM Plex Sans Arabic (same weights).
@@ -193,9 +193,9 @@ An "N" whose two stems are a left square bracket "[" and a right square bracket 
 Order: **Header, Hero, Projects, Skills, Right now, About, Contact, Footer.**
 
 ### 7.1 Header (sticky)
-- Start side: the 32px brand mark + name text (hidden under 480px and from 640px to 767px, where it doesn't fit whole).
+- Start side: the 32px brand mark + name text (hidden under 480px, where it doesn't fit whole).
 - Center (desktop): anchors Projects, Skills, About, Contact.
-- End side: availability pill (teal dot + `hero.availability`, shown on 640px+; dot only below), **Fast mode** button (outlined), language toggle (label from `nav.lang`: "العربية" on English pages, "English" on Arabic pages).
+- End side: **Fast mode** button (outlined), language toggle (label from `nav.lang`: "العربية" on English pages, "English" on Arabic pages).
 - Under 1024px: logo, Fast mode, lang toggle, and a menu button that opens a full-width sheet with the anchors.
 - Behavior: background `--bg` at 80% with backdrop blur, 1px bottom border; hides on scroll down, shows on scroll up. Active anchor gets a teal underline.
 
