@@ -31,7 +31,7 @@ export const projects: Project[] = [
     links: { live: null, repo: "https://github.com/N3ssar/NoteNest" },
     images: [] },
 
-  { id: "forsa", status: "in-progress", kind: "fullstack", featured: true, orbit: 1, angle: 220,
+  { id: "forsa", status: "in-progress", kind: "fullstack", featured: true, orbit: 1, angle: 200,
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS"], // TODO owner: add the database and auth library once chosen
     links: { live: null, repo: "https://github.com/N3ssar/forsa" }, // live demo hidden on purpose until applying/admin work
     images: [] },
@@ -46,7 +46,7 @@ export const projects: Project[] = [
     links: { live: "https://clatrack.netlify.app/", repo: "TODO" },
     images: [] },
 
-  { id: "portfolio", status: "done", kind: "fullstack", featured: false, orbit: 3, angle: 330,
+  { id: "portfolio", status: "done", kind: "fullstack", featured: false, orbit: 3, angle: 345,
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "next-intl", "Resend"],
     links: { live: null, repo: "TODO" }, // live is null: the visitor is already on it
     images: [] },

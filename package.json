@@ -12,6 +12,7 @@
     "generate:brand": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-brand-assets.mjs"
   },
   "dependencies": {
+    "motion": "^14.9.0",
     "next": "16.4.3",
     "next-intl": "^4.14.9",
     "react": "19.3.0",

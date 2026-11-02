@@ -4,6 +4,8 @@ export const STAR_SYSTEM_VIEWBOX = { width: 340, height: 230 } as const;
 export const SUN = { x: 170, y: 115, r: 18 } as const;
 export const ORBIT_RADII = { 1: 42, 2: 68, 3: 92 } as const;
 
+export const ORBIT_PERIODS_MS = { 1: 80_000, 2: 120_000, 3: 160_000 } as const;
+
 const FEATURED_PLANET_RADIUS = 9;
 const PLANET_RADIUS = 6;
 
@@ -19,6 +21,15 @@ export function orbitPosition(orbit: keyof typeof ORBIT_RADII, angle: number): P
     x: round(SUN.x + radius * Math.cos(radians)),
     y: round(SUN.y + radius * Math.sin(radians)),
   };
+}
+
+// A planet's position after orbiting for a while. Recomputed from the angle so labels stay upright.
+export function orbitPositionAt(
+  orbit: keyof typeof ORBIT_RADII,
+  angle: number,
+  elapsedMs: number,
+): Point {
+  return orbitPosition(orbit, angle + (elapsedMs / ORBIT_PERIODS_MS[orbit]) * 360);
 }
 
 // Undefined for a planned project, which has no orbit.

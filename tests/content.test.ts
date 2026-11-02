@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { projects } from "@/content/projects";
 import { skills } from "@/content/skills";
 import { CONSTELLATION_VIEWBOX } from "@/lib/constellation";
-import { projectPosition } from "@/lib/orbit";
+import { planetRadius, projectPosition, STAR_SYSTEM_VIEWBOX } from "@/lib/orbit";
 import { starSkills, visibleProjects } from "@/lib/status";
 import ar from "@/messages/ar.json";
 import en from "@/messages/en.json";
@@ -58,6 +58,24 @@ describe("content", () => {
   it("gives every visible project an orbit and angle", () => {
     for (const project of visibleProjects(projects)) {
       expect(projectPosition(project), project.id).toBeDefined();
+    }
+  });
+
+  it("places planets far enough apart to tap and inside the map with their labels", () => {
+    // 44px on a 328px wide map is about 46 viewBox units. A label needs about 13 units below the planet.
+    const planets = visibleProjects(projects).map((project) => ({
+      project,
+      point: projectPosition(project)!,
+    }));
+    for (const { project, point } of planets) {
+      expect(point.y + planetRadius(project) + 13, project.id).toBeLessThanOrEqual(
+        STAR_SYSTEM_VIEWBOX.height,
+      );
+      for (const other of planets) {
+        if (other === planets.find(({ project: p }) => p === project)) continue;
+        const distance = Math.hypot(point.x - other.point.x, point.y - other.point.y);
+        expect(distance, `${project.id} to ${other.project.id}`).toBeGreaterThanOrEqual(46);
+      }
     }
   });
 

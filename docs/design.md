@@ -66,7 +66,7 @@ i18n/
   routing.ts  navigation.ts  request.ts   # next-intl config, locale read from next/root-params
 components/
   Header.tsx  HeaderShell.tsx  Hero.tsx  ExplorerId.tsx  ExplorerStatus.tsx
-  projects/StarSystem.tsx  projects/ProjectCard.tsx  projects/ProjectList.tsx
+  projects/Projects.tsx  projects/ProjectsView.tsx  projects/StarSystem.tsx  projects/ProjectCard.tsx  projects/ProjectList.tsx  projects/ScreenshotGallery.tsx
   skills/Constellation.tsx  skills/SkillCard.tsx  skills/SkillGroups.tsx
   RightNow.tsx  About.tsx  Contact.tsx  Footer.tsx
   FastModeButton.tsx  LangToggle.tsx  StatusPill.tsx
@@ -225,7 +225,7 @@ Heading `projects.title`, helper line `projects.hint`.
 - Labels: project name under each planet, 13 viewBox units (so they stay at 12px or more on a 360px screen). **Labels always stay upright**: animate the angle value and recompute x/y; never CSS-rotate a group that contains text.
 - **Orbit motion:** only on screens 1024px+ with a fine pointer. Each orbit turns once every 80 to 160s (different speeds). Motion pauses while the pointer is over the map or any planet button has keyboard focus. On touch devices and under 1024px the map is static (easier tapping).
 - Selected planet: teal 1px ring. Selection shows details **below the map** on mobile and beside it on desktop (never a tooltip), in a `ProjectCard`.
-- **List view toggle:** the same projects as stacked `ProjectCard`s.
+- **List view toggle:** the same projects as stacked `ProjectCard`s. All cards stay in the server-rendered HTML; map view shows only the selected one.
 
 **ProjectCard** (`--surface`, 12px radius, 3px teal `border-s`):
 - Title + kind pill (`projects.kinds`) + status pill if `in-progress` (`projects.status.in-progress`).
@@ -399,7 +399,7 @@ export const projects: Project[] = [
     links: { live: null, repo: "https://github.com/N3ssar/NoteNest" },
     images: [] },
 
-  { id: "forsa", status: "in-progress", kind: "fullstack", featured: true, orbit: 1, angle: 220,
+  { id: "forsa", status: "in-progress", kind: "fullstack", featured: true, orbit: 1, angle: 200,
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS"], // TODO owner: add the database and auth library once chosen
     links: { live: null, repo: "https://github.com/N3ssar/forsa" }, // live demo hidden on purpose until applying/admin work
     images: [] },
@@ -414,7 +414,7 @@ export const projects: Project[] = [
     links: { live: "https://clatrack.netlify.app/", repo: "TODO" },
     images: [] },
 
-  { id: "portfolio", status: "done", kind: "fullstack", featured: false, orbit: 3, angle: 330,
+  { id: "portfolio", status: "done", kind: "fullstack", featured: false, orbit: 3, angle: 345,
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "next-intl", "Resend"],
     links: { live: null, repo: "TODO" }, // live is null: the visitor is already on it
     images: [] },

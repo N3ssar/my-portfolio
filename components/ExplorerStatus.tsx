@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { INTRO_EVENT } from "@/lib/intro";
 
 const INTRO_SEEN_KEY = "mn_intro_seen";
 const STEP_MS = 300;
@@ -31,6 +32,7 @@ export function ExplorerStatus({
     const timers = [
       setTimeout(() => {
         if (!shouldPlayIntro()) return;
+        window.dispatchEvent(new Event(INTRO_EVENT));
         setStep(0);
         for (let next = 1; next <= countdown.length; next++) {
           timers.push(setTimeout(() => setStep(next), next * STEP_MS));

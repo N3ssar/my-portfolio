@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  ORBIT_PERIODS_MS,
   ORBIT_RADII,
   orbitPosition,
+  orbitPositionAt,
   planetRadius,
   projectPosition,
   SUN,
@@ -21,6 +23,26 @@ describe("orbitPosition", () => {
     const { x, y } = orbitPosition(1, 45);
     expect(x).toBeCloseTo(SUN.x + ORBIT_RADII[1] * Math.SQRT1_2, 1);
     expect(y).toBeCloseTo(SUN.y + ORBIT_RADII[1] * Math.SQRT1_2, 1);
+  });
+});
+
+describe("orbitPositionAt", () => {
+  it("starts at the base angle and returns there after a full period", () => {
+    expect(orbitPositionAt(2, 30, 0)).toEqual(orbitPosition(2, 30));
+    expect(orbitPositionAt(2, 30, ORBIT_PERIODS_MS[2])).toEqual(orbitPosition(2, 30));
+  });
+
+  it("moves a quarter turn in a quarter period", () => {
+    expect(orbitPositionAt(1, 0, ORBIT_PERIODS_MS[1] / 4)).toEqual(orbitPosition(1, 90));
+  });
+
+  it("uses a different period for each orbit, between 80 and 160 seconds", () => {
+    const periods = Object.values(ORBIT_PERIODS_MS);
+    expect(new Set(periods).size).toBe(periods.length);
+    for (const period of periods) {
+      expect(period).toBeGreaterThanOrEqual(80_000);
+      expect(period).toBeLessThanOrEqual(160_000);
+    }
   });
 });
 

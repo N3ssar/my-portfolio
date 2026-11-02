@@ -120,4 +120,16 @@
   .btn-outline:hover {
     color: var(--accent);
   }
+
+  .sun-intro {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: sun-intro 400ms ease-out;
+  }
+}
+
+@keyframes sun-intro {
+  from {
+    transform: scale(0.6);
+  }
 }
