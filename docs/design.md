@@ -174,7 +174,7 @@ An "N" whose two stems are a left square bracket "[" and a right square bracket 
 - Container: max-width 1080px, horizontal padding 16px (mobile) / 24px.
 - Radius: 8px controls, 12px cards, 16px large panels, 999px pills.
 - Borders: 1px `--border` (use 1px, not 0.5px, for consistent rendering on all screens). No shadows.
-- Motion: ease-out, 200 to 400ms for UI; orbit motion very slow. **Respect `prefers-reduced-motion`**: no countdown, no orbit motion; show the final static state.
+- Motion: ease-out, 200 to 400ms for UI; planet drift very slow. **Respect `prefers-reduced-motion`**: no countdown, no drift; show the final static state.
 
 ## 6. Global layout and rules
 
@@ -222,12 +222,12 @@ Heading `projects.title`, helper line `projects.hint`.
 - Center: the **sun** (teal, r = 18, label from `projects.sun`).
 - Orbit rings: 1px `--border` circles for orbits 1, 2, 3, centered on the sun, with radii 42, 68 and 92, so a planet and its label still fit the viewBox at the bottom of orbit 3. Angles: 0° points east and angles run clockwise (SVG coordinates).
 - Planets: every project with status `done` or `in-progress`, placed by `lib/orbit.ts` from `orbit` and `angle`. Size and outline follow section 4.1. Colors: `--text` for featured, `--text-soft` for others.
-- Labels: project name under each planet, 13 viewBox units (so they stay at 12px or more on a 360px screen). **Labels always stay upright**: animate the angle value and recompute x/y; never CSS-rotate a group that contains text.
-- **Orbit motion:** only on screens 1024px+ with a fine pointer. Each orbit turns once every 80 to 160s (different speeds). Motion pauses while the pointer is over the map or any planet button has keyboard focus. On touch devices and under 1024px the map is static (easier tapping).
-- Selected planet: teal 1px ring. Selection shows details **below the map** on mobile and beside it on desktop (never a tooltip), in a `ProjectCard`.
+- Labels: project name as HTML at a fixed 13px (never SVG text that scales), on the side of the planet facing away from the sun, moving to above or below if it wouldn't fit beside it. A unit test checks that no two labels overlap, and that no label touches a planet or the sun, at any point in the drift range, in both languages, on the narrowest map. **Labels always stay upright**: planets only translate; never rotate an element that contains text.
+- **Planet drift:** planets do not complete orbits. Each one sways about ±8° along its orbit around its fixed `angle`, slowly (36 to 60s per sway), with its own period and phase. Only on screens 1024px+ with a fine pointer. Drift runs as browser-driven transform animations through `motion/mini`, so React never renders per frame. It pauses while the pointer is over the map or any planet button has keyboard focus. On touch devices and under 1024px the map is static (easier tapping).
+- Selected planet: teal 1px ring. Selection shows details **below the map** on mobile and beside it on desktop (never a tooltip), in a `ProjectCard`. At 1024px and up the map is `position: sticky`, so it stays visible while a long card scrolls.
 - **List view toggle:** the same projects as stacked `ProjectCard`s. All cards stay in the server-rendered HTML; map view shows only the selected one.
 
-**ProjectCard** (`--surface`, 12px radius, 3px teal `border-s`):
+**ProjectCard** (`--surface`, 12px radius, 3px teal `border-s`, small body text `0.875rem`, compact padding):
 - Title + kind pill (`projects.kinds`) + status pill if `in-progress` (`projects.status.in-progress`).
 - `summary` (one plain sentence).
 - If present: **Challenge** and **What I did**.
@@ -394,12 +394,12 @@ export const projects: Project[] = [
     links: { live: "https://around-the-w0rld.vercel.app/", repo: "TODO" },
     images: [] },
 
-  { id: "notenest", status: "done", kind: "backend", featured: true, orbit: 2, angle: 300,
+  { id: "notenest", status: "done", kind: "backend", featured: true, orbit: 2, angle: 285,
     stack: ["Node.js", "Express.js", "MongoDB", "Mongoose", "Postman"],
     links: { live: null, repo: "https://github.com/N3ssar/NoteNest" },
     images: [] },
 
-  { id: "forsa", status: "in-progress", kind: "fullstack", featured: true, orbit: 1, angle: 200,
+  { id: "forsa", status: "in-progress", kind: "fullstack", featured: true, orbit: 1, angle: 225,
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS"], // TODO owner: add the database and auth library once chosen
     links: { live: null, repo: "https://github.com/N3ssar/forsa" }, // live demo hidden on purpose until applying/admin work
     images: [] },
@@ -414,7 +414,7 @@ export const projects: Project[] = [
     links: { live: "https://clatrack.netlify.app/", repo: "TODO" },
     images: [] },
 
-  { id: "portfolio", status: "done", kind: "fullstack", featured: false, orbit: 3, angle: 345,
+  { id: "portfolio", status: "done", kind: "fullstack", featured: false, orbit: 3, angle: 355,
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "next-intl", "Resend"],
     links: { live: null, repo: "TODO" }, // live is null: the visitor is already on it
     images: [] },
@@ -968,7 +968,7 @@ The task is done only when every item is true.
 
 **Behavior**
 - [ ] Countdown runs only in the Explorer ID status, once per session, never delays or hides content, off with reduced motion.
-- [ ] Orbit motion only on desktop fine pointer, pauses on hover/focus, labels stay upright.
+- [ ] Planet drift only on desktop fine pointer, pauses on hover/focus, labels stay upright and never overlap.
 - [ ] Star system and constellation fully usable by keyboard and screen reader through HTML buttons and list views.
 - [ ] Fast mode renders at `/{locale}/fast`, is print-friendly, uses the same data.
 - [ ] Contact form validates inline, handles all four states, shows the email fallback on failure.

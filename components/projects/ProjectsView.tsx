@@ -35,12 +35,14 @@ export function ProjectsView({
         className={`mt-8 grid items-start gap-8 ${showList ? "" : "lg:grid-cols-[3fr_2fr]"}`}
       >
         {!showList && (
-          <StarSystem
-            planets={planets}
-            sunLabel={sunLabel}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-          />
+          <div className="lg:sticky lg:top-20">
+            <StarSystem
+              planets={planets}
+              sunLabel={sunLabel}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
+            />
+          </div>
         )}
         <ProjectList cards={cards} selectedId={selectedId} showAll={showList} />
       </div>

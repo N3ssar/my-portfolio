@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
-  ORBIT_PERIODS_MS,
+  driftPeriodMs,
+  driftTransforms,
+  labelSide,
   ORBIT_RADII,
   orbitPosition,
-  orbitPositionAt,
   planetRadius,
   projectPosition,
   SUN,
@@ -26,23 +27,38 @@ describe("orbitPosition", () => {
   });
 });
 
-describe("orbitPositionAt", () => {
-  it("starts at the base angle and returns there after a full period", () => {
-    expect(orbitPositionAt(2, 30, 0)).toEqual(orbitPosition(2, 30));
-    expect(orbitPositionAt(2, 30, ORBIT_PERIODS_MS[2])).toEqual(orbitPosition(2, 30));
+describe("driftTransforms", () => {
+  const planet = project({ id: "a", orbit: 2, angle: 30 });
+
+  it("loops back to where it started", () => {
+    const transforms = driftTransforms(planet, 3)!;
+    expect(transforms.at(-1)).toBe(transforms[0]);
   });
 
-  it("moves a quarter turn in a quarter period", () => {
-    expect(orbitPositionAt(1, 0, ORBIT_PERIODS_MS[1] / 4)).toEqual(orbitPosition(1, 90));
+  it("starts from a different phase for each planet", () => {
+    expect(driftTransforms(planet, 1)![0]).not.toBe(driftTransforms(planet, 2)![0]);
   });
 
-  it("uses a different period for each orbit, between 80 and 160 seconds", () => {
-    const periods = Object.values(ORBIT_PERIODS_MS);
-    expect(new Set(periods).size).toBe(periods.length);
-    for (const period of periods) {
-      expect(period).toBeGreaterThanOrEqual(80_000);
-      expect(period).toBeLessThanOrEqual(160_000);
-    }
+  it("has no drift for a planned project", () => {
+    const planned = project({ id: "p", status: "planned", orbit: undefined, angle: undefined });
+    expect(driftTransforms(planned, 0)).toBeUndefined();
+  });
+
+  it("gives each planet its own period", () => {
+    expect(driftPeriodMs(0)).not.toBe(driftPeriodMs(1));
+  });
+});
+
+describe("labelSide", () => {
+  it("faces away from the sun", () => {
+    expect(labelSide({ x: SUN.x + 60, y: SUN.y + 5 }, 6, 40)).toBe("end");
+    expect(labelSide({ x: SUN.x - 60, y: SUN.y + 5 }, 6, 40)).toBe("start");
+    expect(labelSide({ x: SUN.x + 5, y: SUN.y - 60 }, 6, 40)).toBe("above");
+    expect(labelSide({ x: SUN.x + 5, y: SUN.y + 60 }, 6, 40)).toBe("below");
+  });
+
+  it("moves above or below when the label wouldn't fit beside the planet", () => {
+    expect(labelSide({ x: 300, y: SUN.y + 10 }, 6, 100)).toBe("below");
   });
 });
 
