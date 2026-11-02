@@ -1,6 +1,5 @@
 export const site = {
   name: "Muhammad Nassar",
-  initials: "MN",
   email: "n3ssar.swe@gmail.com",
   whatsapp: "https://wa.me/201067376362",
   links: {

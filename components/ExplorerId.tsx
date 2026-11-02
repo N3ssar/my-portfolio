@@ -3,6 +3,7 @@ import { join } from "node:path";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { site } from "@/content/site";
+import { BrandMark } from "./BrandMark";
 import { ExplorerStatus } from "./ExplorerStatus";
 
 const hasPhoto = existsSync(join(process.cwd(), "public", "photo.jpg"));
@@ -35,9 +36,7 @@ export function ExplorerId() {
             className="size-13 shrink-0 rounded-full object-cover"
           />
         ) : (
-          <span className="flex size-13 shrink-0 items-center justify-center rounded-full border border-border font-medium">
-            {site.initials}
-          </span>
+          <BrandMark size={52} className="shrink-0 rounded-xl border border-border" />
         )}
         <dl className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm">
           {rows.map(([label, value]) => (

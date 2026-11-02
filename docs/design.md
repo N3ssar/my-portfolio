@@ -57,7 +57,8 @@ app/
     not-found.tsx         # 404 (section 7.9); unmatched URLs may also need a catch-all route or global-not-found, test in step 8
   api/contact/route.ts    # POST handler (section 10)
   globals.css             # tokens via @theme
-  icon.svg                # favicon: teal dot on dark circle
+  icon.svg                # favicon: brand mark (section 5)
+  apple-icon.png          # 180x180 brand mark, full-bleed --surface because iOS rounds the corners
   sitemap.ts
   robots.ts
 proxy.ts                  # next-intl locale detection and redirect (section 11)
@@ -87,7 +88,7 @@ public/
   Muhammad_Nassar_CV.pdf  # TODO owner provides
   photo.jpg               # optional, owner provides
   projects/<id>/*.png     # optional project screenshots
-  og.png                  # 1200x630, generate from design tokens
+  og.png                  # 1200x630, generated from design tokens: brand mark, name, role, location
 README.md
 TODO.md
 CLAUDE.md                 # points the agent to this file
@@ -158,7 +159,10 @@ Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globa
 | `--accent-ink` | `#032B27` | text on accent backgrounds |
 | `--danger` | `#FF8A8A` | form errors only |
 
-**Accent rule (strict):** teal appears only on (a) the sun, (b) primary buttons, (c) the availability dot, (d) selected planet/star ring, (e) link hover and focus rings, (f) small section eyebrow labels, (g) the Explorer ID status text, (h) the "MN" initials in the header, (i) the active nav anchor underline, (j) the ProjectCard start border and the highlight ring on a selected card, (k) the action words in Contact. Nothing else is colored. Status pills ("In progress", "Currently learning") are **not** teal: `--surface` background, 1px `--border`, `--text-soft` text. No gradients, no glows beyond a subtle 0.18 opacity halo on the sun and selected node, no neon.
+**Accent rule (strict):** teal appears only on (a) the sun, (b) primary buttons, (c) the availability dot, (d) selected planet/star ring, (e) link hover and focus rings, (f) small section eyebrow labels, (g) the Explorer ID status text, (h) the brand mark, (i) the active nav anchor underline, (j) the ProjectCard start border and the highlight ring on a selected card, (k) the action words in Contact. Nothing else is colored. Status pills ("In progress", "Currently learning") are **not** teal: `--surface` background, 1px `--border`, `--text-soft` text. No gradients, no glows beyond a subtle 0.18 opacity halo on the sun and selected node, no neon.
+
+### Brand mark
+An "N" whose two stems are a left square bracket "[" and a right square bracket "]", joined by a diagonal from the top-left corner to the bottom-right corner. `--accent` strokes on a `--surface` rounded square, square line caps, miter joins. The stroke is thicker at 24px and below so it stays legible at 16px. Used as `app/icon.svg`, `app/apple-icon.png`, the header mark, the Explorer ID fallback when there is no photo, and the logo on `og.png`. Component: `components/BrandMark.tsx`.
 
 ### Typography
 - Headings: Inter 500. Body: Inter 400. Arabic: IBM Plex Sans Arabic (same weights).
@@ -189,7 +193,7 @@ Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globa
 Order: **Header, Hero, Projects, Skills, Right now, About, Contact, Footer.**
 
 ### 7.1 Header (sticky)
-- Start side: initials mark "MN" in a 32px circle (`--surface`, text `--accent`) + name text (hidden under 480px and from 640px to 767px, where it doesn't fit whole).
+- Start side: the 32px brand mark + name text (hidden under 480px and from 640px to 767px, where it doesn't fit whole).
 - Center (desktop): anchors Projects, Skills, About, Contact.
 - End side: availability pill (teal dot + `hero.availability`, shown on 640px+; dot only below), **Fast mode** button (outlined), language toggle (label from `nav.lang`: "العربية" on English pages, "English" on Arabic pages).
 - Under 1024px: logo, Fast mode, lang toggle, and a menu button that opens a full-width sheet with the anchors.
@@ -203,7 +207,7 @@ Layout (mobile single column; desktop two columns with the Explorer ID on the en
 2. H1: `hero.title`.
 3. Subtext: `hero.subtitle` (soft color, max-width 560px).
 4. Two buttons: primary teal **See my projects** (scrolls to `#projects`), secondary outlined **Download CV** (`site.cv`). Under 400px, stack them vertically. Below them, a text link `hero.ctaContact` to `#contact`.
-5. **Explorer ID card** (`--surface`, 1px border, 12px radius): top row has `hero.id.label` (mono, muted) on the start side and a **status text** (mono, teal) on the end side. Below: a 52px circle with initials "MN" (or `public/photo.jpg` if it exists) and a 2-column definition list: Role / Mission / Available / Based in.
+5. **Explorer ID card** (`--surface`, 1px border, 12px radius): top row has `hero.id.label` (mono, muted) on the start side and a **status text** (mono, teal) on the end side. Below: the 52px brand mark (or `public/photo.jpg` in a 52px circle, if it exists) and a 2-column definition list: Role / Mission / Available / Based in.
 6. Scroll hint: `hero.scroll` with a small down arrow.
 
 **Launch countdown (small, non-blocking):**
@@ -347,7 +351,6 @@ NEXT_PUBLIC_SITE_URL=
 // content/site.ts
 export const site = {
   name: "Muhammad Nassar",
-  initials: "MN",
   email: "n3ssar.swe@gmail.com",
   whatsapp: "https://wa.me/201067376362",
   links: {
@@ -990,7 +993,7 @@ The task is done only when every item is true.
 5. Skills: constellation, SkillCard, SkillGroups.
 6. Right now and About.
 7. Contact UI, then API route with tests.
-8. Footer (GitHub activity), 404, `app/icon.svg` (and delete the scaffold's `app/favicon.ico`), Fast mode.
+8. Footer (GitHub activity), 404, Fast mode.
 9. SEO, analytics, Playwright tests, README, QA against section 16.
 
 **Phase 2 (after Phase 1 is deployed and verified): terminal.**
