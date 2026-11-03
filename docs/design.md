@@ -270,7 +270,7 @@ One compact card, rows computed as in section 4.3: **Building**, **Learning**, *
 4. **Languages:** `about.languages`.
 
 ### 7.7 Contact
-Heading `contact.title`, intro `contact.intro`.
+Heading `contact.title`, intro `contact.intro`. At 1024px and up, the one-tap actions (start side, about 40%) and the message form (end side, about 60%) sit side by side, aligned at the top. Below 1024px they stack, actions first.
 
 1. **One-tap actions** (rows with icon, label and a teal action word): **Email** (copy to clipboard with "Copied" feedback), **LinkedIn** (opens), **WhatsApp** (opens `site.whatsapp`), **GitHub** (opens). Do not print the raw phone number as visible text.
 2. **Message form** (`contact.form`): fields Name, "Email or WhatsApp number", Message (3 rows). Use a real `<form onSubmit>` with `preventDefault`, labels linked to inputs, inline validation messages under each field, and a status line with `aria-live="polite"`. Never `alert()`. States: idle, sending (button disabled, `form.sending`), success (`form.success`), error (`form.errSend` + the email + a copy button; on a `429` response, the error state shows `form.errRate` instead).
@@ -293,26 +293,26 @@ Simple centered panel: `notFound.title`, `notFound.text`, and a primary button `
 
 Route: `/{locale}/fast`. Entry points: the **Fast mode** header button and a shareable direct link.
 
-A clean summary with no space theme, no animation, no SVG. Same tokens.
+The same site, just calmer: the same 1080px container, tokens, type scale, spacing, static starfield and hero glow. No maps, no SVG visuals, no motion.
 
 Content, top to bottom:
-1. Name, role, location, availability, military status.
-2. Two buttons: **Download CV**, **Contact** (anchors to the block below).
-3. **Top projects:** up to 3 projects with `featured: true` and `status: "done"`, in array order: name, summary, stack, Live and Code links.
-4. **In progress:** one line per `in-progress` project (name + summary + link if any).
-5. **Skills:** the grouped list (same component as SkillGroups, compact).
-6. **Experience and education:** `fast.experienceItems`.
-7. **Contact block:** Email, LinkedIn, WhatsApp, GitHub.
-8. Link `fast.full`.
+1. **Top block**, mirroring the hero (two columns at 1024px+, stacked below): on the start side `fast.title` (small, muted), the name as `h1` (never larger than the hero title), the role, and two buttons: **Download CV** and **Contact** (anchors to the contact card). On the end side, a facts card like the Explorer ID: Based in, Available and Military status (`hero.id.*` labels and values).
+2. **Top projects:** up to 3 projects with `featured: true` and `status: "done"`, in array order, as compact `ProjectCard`s (name, pills, summary, stack, Live and Code links; no details or screenshots). 3 columns at 1024px+, 1 column below.
+3. **In progress:** a card with one line per `in-progress` project (name + summary + link if any).
+4. **Skills:** a card with the grouped list (`SkillGroups`, compact).
+5. **Experience and education** (`fast.experienceItems`) and **Contact** (Email, LinkedIn, WhatsApp, GitHub): one card each, side by side at 1024px+.
+6. Link `fast.full`.
 
-Rules: print-friendly (`@media print`: white background, black text, no buttons, no header or footer). On this page the header's Fast mode button becomes the `fast.back` link. The starfield is covered by a plain `--bg` layer. Same content files, no separate copy.
+Every block uses the site's card style (`--surface`, 1px border, 12px radius).
+
+Rules: print-friendly (`@media print`: white background with no starfield or glow, black text, no buttons, no header or footer). On this page the header's Fast mode button becomes the `fast.back` link. Same content files, no separate copy.
 
 ## 9. States and responsive behavior
 
 - A section with no data shows nothing (never an empty frame), except Right now `TODO` values (section 4.3).
 - Loading states exist only for the GitHub footer line and the contact submit.
 - Under 400px: stack the two hero buttons.
-- Desktop 1024+: Projects map start side (60%), ProjectCard end side (40%). Same for Skills. Everything else single column.
+- Desktop 1024+: Projects map start side (60%), ProjectCard end side (40%). Same for Skills. Contact: actions start side (40%), form end side (60%). Everything else single column.
 
 ## 10. Contact backend (`app/api/contact/route.ts`)
 

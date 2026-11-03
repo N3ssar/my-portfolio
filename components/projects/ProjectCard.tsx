@@ -8,7 +8,8 @@ function externalLinkProps(href: string) {
   return { href, target: "_blank", rel: "noopener noreferrer" };
 }
 
-export function ProjectCard({ project }: { project: Project }) {
+// Compact cards (Fast mode) show the name, pills, summary, stack and links only.
+export function ProjectCard({ project, compact = false }: { project: Project; compact?: boolean }) {
   const t = useTranslations("projects");
   const common = useTranslations("common");
   const { id, status, kind, stack, links, images } = project;
@@ -38,21 +39,21 @@ export function ProjectCard({ project }: { project: Project }) {
       </div>
       <p className="mt-2 text-text-soft">{t(`${item}.summary`)}</p>
 
-      {challenge && (
+      {!compact && challenge && (
         <div className="mt-3">
           <h4 className="font-medium">{t("labels.challenge")}</h4>
           <p className="mt-1 text-text-soft">{challenge}</p>
         </div>
       )}
-      {did && (
+      {!compact && did && (
         <div className="mt-3">
           <h4 className="font-medium">{t("labels.did")}</h4>
           <p className="mt-1 text-text-soft">{did}</p>
         </div>
       )}
-      {note && <p className="mt-3 text-text-muted">{note}</p>}
+      {!compact && note && <p className="mt-3 text-text-muted">{note}</p>}
 
-      {images.length > 0 && (
+      {!compact && images.length > 0 && (
         <ScreenshotGallery
           images={images}
           altPrefix={`${name}: ${t("labels.screenshots")}`}
@@ -60,7 +61,7 @@ export function ProjectCard({ project }: { project: Project }) {
         />
       )}
 
-      {bullets.length > 0 && (
+      {!compact && bullets.length > 0 && (
         <div className="mt-3">
           <h4 className="font-medium">{t(`labels.${bulletsKey}`)}</h4>
           <ul className="mt-1 list-disc space-y-1 ps-5 text-text-soft">

@@ -41,7 +41,7 @@ function ActionLink({ href, icon, label, action }: { href: string; icon: keyof t
 }
 
 function Column({ children }: { children: ReactNode }) {
-  return <div className="mt-10 max-w-[720px]">{children}</div>;
+  return <div className="max-w-[720px] lg:max-w-none">{children}</div>;
 }
 
 export function Contact() {
@@ -54,60 +54,63 @@ export function Contact() {
       <h2>{t("title")}</h2>
       <p className="mt-3 text-text-soft">{t("intro")}</p>
 
-      <Column>
-        <ul className="space-y-2">
-          <li>
-            <CopyButton
-              text={site.email}
-              label={t("actions.copyEmail")}
-              copiedLabel={common("copied")}
-              className={ROW}
-            >
-              <Icon name="email" />
-              <span className="flex flex-1 flex-wrap gap-x-2">
-                {t("actions.email")}
-                <bdi className="text-text-muted">{site.email}</bdi>
-              </span>
-            </CopyButton>
-          </li>
-          <li>
-            <ActionLink href={site.links.linkedin} icon="linkedin" label={t("actions.linkedin")} action={t("actions.open")} />
-          </li>
-          <li>
-            {/* The number is only in the link, never shown as text. */}
-            <ActionLink href={site.whatsapp} icon="whatsapp" label={t("actions.whatsapp")} action={t("actions.open")} />
-          </li>
-          <li>
-            <ActionLink href={site.links.github} icon="github" label={t("actions.github")} action={t("actions.open")} />
-          </li>
-        </ul>
-      </Column>
+      {/* From 1024px: actions on the start side (about 40%), form on the end side (about 60%). */}
+      <div className="mt-10 grid items-start gap-10 lg:grid-cols-[2fr_3fr] lg:gap-12">
+        <Column>
+          <ul className="space-y-2">
+            <li>
+              <CopyButton
+                text={site.email}
+                label={t("actions.copyEmail")}
+                copiedLabel={common("copied")}
+                className={ROW}
+              >
+                <Icon name="email" />
+                <span className="flex flex-1 flex-wrap gap-x-2">
+                  {t("actions.email")}
+                  <bdi className="text-text-muted">{site.email}</bdi>
+                </span>
+              </CopyButton>
+            </li>
+            <li>
+              <ActionLink href={site.links.linkedin} icon="linkedin" label={t("actions.linkedin")} action={t("actions.open")} />
+            </li>
+            <li>
+              {/* The number is only in the link, never shown as text. */}
+              <ActionLink href={site.whatsapp} icon="whatsapp" label={t("actions.whatsapp")} action={t("actions.open")} />
+            </li>
+            <li>
+              <ActionLink href={site.links.github} icon="github" label={t("actions.github")} action={t("actions.open")} />
+            </li>
+          </ul>
+        </Column>
 
-      <Column>
-        <h3>{t("form.title")}</h3>
-        <ContactForm
-          email={site.email}
-          locale={locale}
-          labels={{
-            name: t("form.name"),
-            contact: t("form.contact"),
-            message: t("form.message"),
-            namePh: t("form.namePh"),
-            contactPh: t("form.contactPh"),
-            messagePh: t("form.messagePh"),
-            send: t("form.send"),
-            sending: t("form.sending"),
-            success: t("form.success"),
-            errName: t("form.errName"),
-            errContact: t("form.errContact"),
-            errMessage: t("form.errMessage"),
-            errSend: t("form.errSend"),
-            errRate: t("form.errRate"),
-            copy: common("copy"),
-            copied: common("copied"),
-          }}
-        />
-      </Column>
+        <Column>
+          <h3>{t("form.title")}</h3>
+          <ContactForm
+            email={site.email}
+            locale={locale}
+            labels={{
+              name: t("form.name"),
+              contact: t("form.contact"),
+              message: t("form.message"),
+              namePh: t("form.namePh"),
+              contactPh: t("form.contactPh"),
+              messagePh: t("form.messagePh"),
+              send: t("form.send"),
+              sending: t("form.sending"),
+              success: t("form.success"),
+              errName: t("form.errName"),
+              errContact: t("form.errContact"),
+              errMessage: t("form.errMessage"),
+              errSend: t("form.errSend"),
+              errRate: t("form.errRate"),
+              copy: common("copy"),
+              copied: common("copied"),
+            }}
+          />
+        </Column>
+      </div>
     </section>
   );
 }

@@ -180,7 +180,9 @@
     color: #000;
   }
 
-  * {
+  *,
+  *::before,
+  *::after {
     color: #000 !important;
     background: transparent !important;
     border-color: #ccc !important;
