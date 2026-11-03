@@ -666,6 +666,8 @@ Copy as is. Strings marked `TODO` are for the owner.
     ],
     "certsTitle": "Certifications",
     "certs": [
+      "Data Structures Decode, Cloud Native Base Camp (08/2026)",
+      "Node.js From Scratch, Cloud Native Base Camp (07/2026)",
       "React with TypeScript (including testing with Vitest)",
       "React.js Track",
       "JavaScript Track (03/2025)",
@@ -878,6 +880,8 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
     ],
     "certsTitle": "الشهادات",
     "certs": [
+      "Data Structures Decode, Cloud Native Base Camp (08/2026)",
+      "Node.js From Scratch, Cloud Native Base Camp (07/2026)",
       "React with TypeScript (بما في ذلك الاختبار بـ Vitest)",
       "React.js Track",
       "JavaScript Track (03/2025)",
