@@ -93,7 +93,7 @@ public/
   Muhammad_Nassar_CV.pdf  # TODO owner provides
   photo.jpg               # optional, owner provides
   projects/<id>/*.png     # project screenshots: Nabd Masr from its repo, demos via `pnpm capture:demos`
-  og.png                  # 1200x630, generated from design tokens: brand mark, name, role, location
+  og.jpg                  # 1200x630 JPEG under 200KB, generated from design tokens: brand mark, name, role, location
 README.md
 TODO.md
 CLAUDE.md                 # points the agent to this file
@@ -177,7 +177,7 @@ Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globa
 - **Text cursor:** `caret-color: var(--accent)` in inputs and textareas.
 
 ### Brand mark
-An "N" whose two stems are a left square bracket "[" and a right square bracket "]", joined by a diagonal from the top-left corner to the bottom-right corner. `--accent` strokes on a `--surface` rounded square, square line caps, miter joins. The stroke is thicker at 24px and below so it stays legible at 16px. Used as `app/icon.svg`, `app/favicon.ico` (16 and 32px, for browsers that request it directly), `app/apple-icon.png`, the header mark, the Explorer ID fallback when there is no photo, and the logo on `og.png`. Component: `components/BrandMark.tsx`. `pnpm generate:brand` regenerates the favicon and the two PNGs (`scripts/generate-brand-assets.mjs`).
+An "N" whose two stems are a left square bracket "[" and a right square bracket "]", joined by a diagonal from the top-left corner to the bottom-right corner. `--accent` strokes on a `--surface` rounded square, square line caps, miter joins. The stroke is thicker at 24px and below so it stays legible at 16px. Used as `app/icon.svg`, `app/favicon.ico` (16 and 32px, for browsers that request it directly), `app/apple-icon.png`, the header mark, the Explorer ID fallback when there is no photo, and the logo on `og.jpg`. Component: `components/BrandMark.tsx`. `pnpm generate:brand` regenerates the favicon, `apple-icon.png` and `og.jpg` (`scripts/generate-brand-assets.mjs`).
 
 ### Typography
 - Headings: Inter 500. Body: Inter 400. Arabic: IBM Plex Sans Arabic (same weights).
@@ -210,7 +210,7 @@ An "N" whose two stems are a left square bracket "[" and a right square bracket 
 - Every visual (star system, constellation) has an equivalent **list view** and a visible "List view / Map view" toggle.
 - No layout shift: reserve space for SVGs with a fixed aspect ratio.
 - Performance target: Lighthouse 90+ on mobile for Performance, Accessibility, SEO, Best Practices. Server-render all text. **The LCP element (the hero `h1`) is never rendered with opacity 0**, and no text is hidden without JavaScript (protects LCP and crawlers).
-- SEO: per-locale `<title>` and description, Open Graph and Twitter image (`public/og.png`), canonical URL and `hreflang` alternates (en, ar, x-default) on every page, JSON-LD `Person` on the home page, sitemap (both locales, home and Fast mode, with alternates), robots (disallows `/api/`). Helpers in `lib/seo.ts`. The origin comes from `NEXT_PUBLIC_SITE_URL`, else Vercel's production domain, else localhost.
+- SEO: per-locale `<title>` and description, Open Graph and Twitter image (`public/og.jpg`: a 1200x630 JPEG under 200KB, because WhatsApp drops larger preview images; every `og:image` and `twitter:image` URL is absolute, built from the site origin, with `og:image:type`), canonical URL and `hreflang` alternates (en, ar, x-default) on every page, JSON-LD `Person` on the home page, sitemap (both locales, home and Fast mode, with alternates), robots (disallows `/api/`). Helpers in `lib/seo.ts`. The origin comes from `NEXT_PUBLIC_SITE_URL`, else Vercel's production domain, else localhost.
 - Analytics: `@vercel/analytics` (`<Analytics />` in the layout). Custom events: `fast_mode_open` (header button), `cv_download` (hero and Fast mode CV links), `contact_submit_success` (form), `project_select` with the project id (planet buttons and "Used in" buttons). No personal data in events.
 
 ## 7. Sections (in this exact order)
@@ -712,7 +712,7 @@ Copy as is. Strings marked `TODO` are for the owner.
       "label": "Looking for",
       "value": "A junior Frontend or Full-Stack role"
     },
-    "updated": "TODO",
+    "updated": "November 2026",
     "updatedLabel": "Last updated",
     "comingSoon": "Coming soon"
   },
@@ -996,7 +996,7 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
       "label": "أبحث عن",
       "value": "وظيفة Junior في Frontend أو Full-Stack"
     },
-    "updated": "TODO",
+    "updated": "نوفمبر 2026",
     "updatedLabel": "آخر تحديث",
     "comingSoon": "قريباً"
   },

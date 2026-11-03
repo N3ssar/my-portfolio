@@ -13,6 +13,11 @@ export function siteUrl(): string {
 
 const OG_LOCALES: Record<string, string> = { en: "en_US", ar: "ar_EG" };
 
+// The link preview image. Absolute, so crawlers never have to resolve it against metadataBase.
+function previewImage() {
+  return { url: `${siteUrl()}/og.jpg`, type: "image/jpeg", width: 1200, height: 630, alt: site.name };
+}
+
 // Per-locale metadata for a page: title, description, canonical URL, hreflang alternates and the OG image.
 // path is the page's path without the locale, for example "" or "/fast".
 export function pageMetadata({
@@ -45,9 +50,9 @@ export function pageMetadata({
       title,
       description,
       locale: OG_LOCALES[locale],
-      images: [{ url: "/og.png", width: 1200, height: 630, alt: site.name }],
+      images: [previewImage()],
     },
-    twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
+    twitter: { card: "summary_large_image", title, description, images: [previewImage()] },
   };
 }
 

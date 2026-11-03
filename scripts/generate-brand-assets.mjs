@@ -1,4 +1,4 @@
-// Renders app/favicon.ico, app/apple-icon.png and public/og.png with a headless Chromium browser.
+// Renders app/favicon.ico, app/apple-icon.png and public/og.jpg with a headless Chromium browser.
 // Inter comes from the Next.js build output, so run `pnpm build` first.
 // Set BROWSER_PATH if Edge or Chrome is not found.
 import { spawnSync } from "node:child_process";
@@ -15,6 +15,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { chromium } from "@playwright/test";
 import { site } from "../content/site.ts";
 
 const root = join(import.meta.dirname, "..");
@@ -57,13 +58,17 @@ p + p { margin-top: 12px; color: ${COLORS.textMuted}; font-size: 28px; }
 <div><h1>${site.name}</h1><p>${messages.hero.id.roleValue}</p><p>${messages.hero.id.basedValue}</p></div></body>`;
 
 function findInter() {
-  // Inter is the only preloaded font, and Next.js marks preloaded files with ".p.".
-  const media = join(root, ".next/static/media");
-  const file = existsSync(media)
-    ? readdirSync(media).find((name) => /-s\.p\..*\.woff2$/.test(name))
-    : undefined;
-  if (!file) throw new Error("Inter not found in .next/static/media. Run `pnpm build` first.");
-  return join(media, file);
+  // Inter's Latin file, found through its @font-face rule in the built CSS.
+  const chunks = join(root, ".next/static/chunks");
+  const css = existsSync(chunks)
+    ? readdirSync(chunks)
+        .filter((name) => name.endsWith(".css"))
+        .map((name) => readFileSync(join(chunks, name), "utf8"))
+        .join("")
+    : "";
+  const file = css.match(/@font-face\{font-family:Inter;[^}]*?url\(\.\.\/media\/([^)]+\.woff2)\)[^}]*unicode-range:U\+\?\?,/)?.[1];
+  if (!file) throw new Error("Inter not found in the build output. Run `pnpm build` first.");
+  return join(root, ".next/static/media", file);
 }
 
 const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
@@ -131,9 +136,29 @@ try {
     return readFileSync(screenshot);
   }
 
+  // Link preview crawlers (WhatsApp in particular) drop large images, so the OG image is a
+  // JPEG kept well under 200KB. The browser's --screenshot flag only writes PNG, so this one
+  // goes through Playwright, driving the same browser.
+  const OG_MAX_BYTES = 200 * 1024;
+  async function renderJpeg(html, width, height, quality) {
+    const page = join(workDir, "page.html");
+    writeFileSync(page, html);
+    const instance = await chromium.launch({ executablePath: browser });
+    try {
+      const tab = await instance.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
+      await tab.goto(pathToFileURL(page).href);
+      await tab.evaluate(() => document.fonts.ready);
+      const data = await tab.screenshot({ type: "jpeg", quality });
+      if (data.length > OG_MAX_BYTES) throw new Error(`og.jpg is ${data.length} bytes, over the 200KB limit.`);
+      return data;
+    } finally {
+      await instance.close();
+    }
+  }
+
   function write(output, data) {
     writeFileSync(join(root, output), data);
-    console.log(`Wrote ${output}`);
+    console.log(`Wrote ${output} (${data.length} bytes)`);
   }
 
   write(
@@ -141,7 +166,7 @@ try {
     packIco([16, 32].map((size) => ({ size, data: render(favicon(size), size, size, { transparent: true }) }))),
   );
   write("app/apple-icon.png", render(appleIcon, 180, 180));
-  write("public/og.png", render(ogImage, 1200, 630));
+  write("public/og.jpg", await renderJpeg(ogImage, 1200, 630, 90));
 } finally {
   // The browser may still hold its profile for a moment. The OS cleans up temp files anyway.
   try {

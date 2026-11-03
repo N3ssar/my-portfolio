@@ -56,7 +56,7 @@ All are documented in [`.env.example`](.env.example). Without them the site stil
 
 ## Brand assets
 
-`app/favicon.ico`, `app/apple-icon.png` and `public/og.png` are generated. To regenerate them after changing the brand mark or the text on the image, run `pnpm build`, then `pnpm generate:brand`. It needs Edge or Chrome; set `BROWSER_PATH` if yours isn't found.
+`app/favicon.ico`, `app/apple-icon.png` and `public/og.jpg` are generated. To regenerate them after changing the brand mark or the text on the image, run `pnpm build`, then `pnpm generate:brand`. It needs Edge or Chrome; set `BROWSER_PATH` if yours isn't found.
 
 ## Project screenshots
 

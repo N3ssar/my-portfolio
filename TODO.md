@@ -5,7 +5,6 @@ Open items from section 18 of `docs/design.md`.
 ## Content values still set to `TODO`
 
 - [ ] **Repo URLs** in `content/projects.ts`: Around The World, Kanban, CalTrack and this portfolio. Their Code buttons stay hidden until then.
-- [ ] **"Last updated"** in Right now: `rightNow.updated` in `messages/en.json` and `messages/ar.json`.
 
 ## Files to provide
 
