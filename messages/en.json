@@ -264,8 +264,6 @@
     "back": "Back to full site"
   },
   "footer": {
-    "built": "Built with Next.js, TypeScript and Tailwind.",
-    "lastCommit": "Last commit",
     "hint": "Press Ctrl/Cmd + K"
   },
   "notFound": {

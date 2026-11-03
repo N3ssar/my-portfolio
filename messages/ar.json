@@ -264,8 +264,6 @@
     "back": "العودة للموقع الكامل"
   },
   "footer": {
-    "built": "صُمّم وبُني بـ Next.js وTypeScript وTailwind.",
-    "lastCommit": "آخر commit",
     "hint": "اضغط Ctrl/Cmd + K"
   },
   "notFound": {

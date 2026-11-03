@@ -73,7 +73,7 @@ components/
   skills/Skills.tsx  skills/SkillsView.tsx  skills/Constellation.tsx  skills/SkillCard.tsx  skills/SkillGroups.tsx
   mapPlacement.ts         # places HTML labels and buttons over both SVG maps
   RightNow.tsx  About.tsx  Contact.tsx  ContactForm.tsx  CopyButton.tsx  Footer.tsx
-  FastModeButton.tsx  LangToggle.tsx  StatusPill.tsx
+  FastModeButton.tsx  LangToggle.tsx  StatusPill.tsx  BackToTop.tsx
   terminal/*              # Phase 2 only
 content/
   site.ts                 # non-translatable facts (links, contact)
@@ -85,7 +85,7 @@ lib/
   status.ts               # helpers: isVisibleLink, projectsByStatus, learningSkills, etc.
   constellation.ts        # computes edges from usedIn
   orbit.ts                # computes planet x/y from orbit + angle
-  github.ts  contact.ts  ratelimit.ts
+  contact.ts  ratelimit.ts
   contact-delivery.ts     # Resend and Telegram; imported only by the API route
 tests/                    # Vitest unit tests
 e2e/                      # Playwright smoke tests
@@ -279,11 +279,12 @@ Heading `contact.title`, intro `contact.intro`.
 There is no Quick answers block: availability, location and military status are in the Explorer ID card, and languages are in About.
 
 ### 7.8 Footer
-- Start: `footer.built` and `© {year} Muhammad Nassar`.
-- Center: social links (GitHub, LinkedIn, Figma, X), labelled with `site.linkLabels`.
-- End: **Last activity on GitHub:** `footer.lastCommit` + relative time (e.g. "2 hours ago"), formatted with `Intl.RelativeTimeFormat` in the current locale. Data from `lib/github.ts` (the newest `pushed_at` of `site.github_user`'s public repos, server-side fetch in a `use cache` function with a one-hour `cacheLife`, optional `GITHUB_TOKEN`). If the request fails, hide the line silently, and do not cache the failure for the hour. The year and the relative time are computed outside the prerendered shell (section 2).
-- `common.backToTop` button (scrolls to top).
+- Start: `© {year} Muhammad Nassar`. The year is computed in the browser, outside the prerendered shell (section 2).
+- End: social links (GitHub, LinkedIn, Figma, X), labelled with `site.linkLabels`.
+- No "built with" line and no GitHub activity line.
 - Phase 2 only: `footer.hint` on desktop fine-pointer devices.
+
+**Back to top** (`components/BackToTop.tsx`, on every page): a floating, icon-only button (an up arrow) fixed at the bottom end corner (right in English, left in Arabic), kept clear of the device safe area. It appears after scrolling down about one viewport height and hides near the top, with a short fade (no fade with reduced motion). `common.backToTop` is its accessible name; 44px tap target; the site's focus ring. It scrolls to the top smoothly (instantly with reduced motion), then moves focus to the main content. While hidden it is out of the tab order. The footer has extra bottom padding so the end of the page can scroll clear of it, and it never covers the contact form's send button, which sits on the start side.
 
 ### 7.9 404 page
 Simple centered panel: `notFound.title`, `notFound.text`, and a primary button `notFound.back` to `/{locale}`. A single small static planet drawing is allowed. Unknown paths return a real `404` with `noindex`; paths without a locale are first redirected to one. A path with a file extension (for example `/missing.txt`) skips the proxy and gets Next.js's default 404, because there is no root layout to render the localized page.
@@ -346,7 +347,6 @@ TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
-GITHUB_TOKEN=                # optional, read-only, public data only
 NEXT_PUBLIC_SITE_URL=
 ```
 
@@ -791,8 +791,6 @@ Copy as is. Strings marked `TODO` are for the owner.
     "back": "Back to full site"
   },
   "footer": {
-    "built": "Built with Next.js, TypeScript and Tailwind.",
-    "lastCommit": "Last commit",
     "hint": "Press Ctrl/Cmd + K"
   },
   "notFound": {
@@ -1078,8 +1076,6 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
     "back": "العودة للموقع الكامل"
   },
   "footer": {
-    "built": "صُمّم وبُني بـ Next.js وTypeScript وTailwind.",
-    "lastCommit": "آخر commit",
     "hint": "اضغط Ctrl/Cmd + K"
   },
   "notFound": {
@@ -1164,7 +1160,7 @@ The task is done only when every item is true.
 5. Skills: constellation, SkillCard, SkillGroups.
 6. Right now and About.
 7. Contact UI, then API route with tests.
-8. Footer (GitHub activity), 404, Fast mode.
+8. Footer, back-to-top button, 404, Fast mode.
 9. SEO, analytics, Playwright tests, README, QA against section 16.
 
 **Phase 2 (after Phase 1 is deployed and verified): terminal.**
