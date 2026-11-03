@@ -1,0 +1,15 @@
+export const site = {
+  name: "Muhammad Nassar",
+  email: "n3ssar.swe@gmail.com",
+  whatsapp: "https://wa.me/201067376362",
+  links: {
+    github: "https://github.com/N3ssar",
+    linkedin: "https://www.linkedin.com/in/muhammad-ahmad-nassar/",
+    figma: "https://www.figma.com/@nassar1",
+    x: "https://x.com/MuhmdANassar",
+  },
+  // Brand names for the footer links. Not translated.
+  linkLabels: { github: "GitHub", linkedin: "LinkedIn", figma: "Figma", x: "X" },
+  cv: "/Muhammad_Nassar_CV.pdf",
+  github_user: "N3ssar",
+} as const;

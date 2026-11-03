@@ -1,26 +1,535 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+
+  --bg: #0b0b0c;
+  --surface: #1a1a1d;
+  --border: #2a2a2d;
+  --text: #f4f4f1;
+  --text-soft: #c8c8c4;
+  --text-muted: #8a8a90;
+  --accent: #2ec4b6;
+  --accent-ink: #032b27;
+  --danger: #ff8a8a;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-text-soft: var(--text-soft);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --container-page: 1080px;
+  --breakpoint-xs: 400px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  /* A static starfield: tiny dots, mostly --text and one rare --accent. Pure CSS, no animation. */
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(circle at 37px 59px, color-mix(in srgb, var(--text) 45%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 151px 173px, color-mix(in srgb, var(--text) 30%, transparent) 0.75px, transparent 1.25px),
+      radial-gradient(circle at 88px 21px, color-mix(in srgb, var(--text) 60%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 240px 190px, color-mix(in srgb, var(--text) 25%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 17px 301px, color-mix(in srgb, var(--text) 40%, transparent) 0.75px, transparent 1.25px),
+      radial-gradient(circle at 311px 97px, color-mix(in srgb, var(--text) 55%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 199px 402px, color-mix(in srgb, var(--text) 35%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 403px 233px, color-mix(in srgb, var(--text) 50%, transparent) 0.75px, transparent 1.25px),
+      radial-gradient(circle at 122px 488px, color-mix(in srgb, var(--text) 30%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 291px 147px, color-mix(in srgb, var(--accent) 60%, transparent) 0.75px, transparent 1.25px);
+    background-size: 211px 211px, 211px 211px, 293px 293px, 293px 293px, 379px 379px, 379px 379px, 467px 467px, 467px 467px, 541px 541px, 613px 613px;
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  :lang(ar) {
+    font-family: var(--font-plex-arabic), var(--font-sans);
+  }
+
+  html:lang(ar) body {
+    line-height: 1.8;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  html:lang(ar) :is(h1, h2, h3) {
+    line-height: 1.4;
+  }
+
+  section[id] {
+    scroll-margin-top: 72px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  h1 {
+    font-size: clamp(1.75rem, 6vw, 3.5rem);
+  }
+
+  h2 {
+    font-size: clamp(1.375rem, 4vw, 2rem);
+  }
+
+  h3 {
+    font-size: 1.0625rem;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding-inline: 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .btn-sm {
+    padding-inline: 12px;
+    font-size: 0.875rem;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .btn-outline:hover {
+    color: var(--accent);
+  }
+
+  /* One faint accent glow at the top of the hero. It fades out before the section's edges. */
+  .hero-glow {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .hero-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: -1;
+    height: min(560px, 100%);
+    background: radial-gradient(
+      ellipse 50% 70% at 50% 0%,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  .sun-intro {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: sun-intro 400ms ease-out;
+  }
+}
+
+@keyframes sun-intro {
+  from {
+    transform: scale(0.6);
+  }
+}
+
+/* Brand details: scrollbar, selection and caret. */
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+input,
+textarea {
+  caret-color: var(--accent);
+}
+
+/* Firefox: no hover state is possible, so the thumb stays at about 50%. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent) 50%, transparent) var(--bg);
+  }
+}
+
+/* Chromium and Safari, for the page and every inner scroll container. */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  background: var(--accent);
+}
+
+/*
+ * Motion layer: calm, premium, never flashy. Reveals rise 24px over 600 to 700ms with a 6px blur
+ * clearing, on cubic-bezier(0.16, 1, 0.3, 1); children stagger about 80ms; each reveal runs once.
+ * Only transform, opacity and filter animate (plus stroke-dashoffset for lines that draw in, and
+ * colour and border on hover). Everything here is off with prefers-reduced-motion.
+ */
+:root {
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="rtl"] {
+  --hero-from-end: -16px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Smooth hover states on links, buttons, inputs and cards. In the base layer, so a
+     component's own transition utilities still win. */
+  @layer base {
+    a,
+    button,
+    input,
+    textarea {
+      transition-property: color, background-color, border-color;
+      transition-duration: 200ms;
+      transition-timing-function: ease-out;
+    }
+  }
+
+  /* Hover: cards lift 3px and their border brightens; primary buttons lift 1px; arrows nudge 3px. */
+  @layer components {
+    .btn {
+      transition-property: color, background-color, border-color, translate;
+      transition-duration: 250ms;
+      transition-timing-function: var(--ease-premium);
+    }
+
+    .btn-primary:hover {
+      translate: 0 -1px;
+    }
+  }
+
+  .card-lift {
+    transition:
+      translate 350ms var(--ease-premium),
+      border-color 350ms var(--ease-premium);
+  }
+
+  .card-lift:hover {
+    translate: 0 -3px;
+    border-color: color-mix(in srgb, var(--text-muted) 70%, var(--border));
+  }
+
+  .nudge-up svg {
+    transition: translate 250ms var(--ease-premium);
+  }
+
+  .nudge-up:hover svg {
+    translate: 0 -3px;
+  }
+
+  /* Hero entrance: one calm sequence, pure CSS from the first paint, no blur. The h1 only
+     rises and stays at full opacity (it is the LCP element). The countdown waits for the
+     card to settle. */
+  .hero-rise {
+    animation: hero-rise 700ms var(--ease-premium) both;
+  }
+
+  .hero-1,
+  .hero-2 {
+    animation: hero-fade-up 700ms var(--ease-premium) both;
+  }
+
+  .hero-1 {
+    animation-delay: 120ms;
+  }
+
+  .hero-2 {
+    animation-delay: 220ms;
+  }
+
+  .hero-card {
+    animation: hero-from-end 700ms var(--ease-premium) 320ms both;
+  }
+
+  /* Scroll reveals. Only set by JavaScript, and only on sections that start below the fold. */
+  .reveal-pending {
+    opacity: 0;
+  }
+
+  .reveal-in {
+    animation: reveal 650ms var(--ease-premium) both;
+  }
+
+  .reveal-in [data-stagger] {
+    animation: reveal 650ms var(--ease-premium) both;
+    animation-delay: calc(120ms + var(--i, 0) * 80ms);
+  }
+
+  /* Section headings: the text slides up from behind a clip. */
+  .reveal-in .mask-line > span {
+    animation: mask-up 750ms var(--ease-premium) both;
+  }
+
+  /* Projects: orbit rings draw in, the sun scales in, planets pop in one by one. */
+  .reveal-in .orbit-ring {
+    stroke-dasharray: 1;
+    animation: draw 1100ms var(--ease-premium) both;
+    animation-delay: calc(var(--i, 0) * 120ms);
+  }
+
+  .reveal-in .sun-enter,
+  .reveal-in .planet-pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pop 650ms var(--ease-premium) both;
+  }
+
+  .reveal-in .sun-enter {
+    animation-delay: 150ms;
+  }
+
+  .reveal-in .planet-pop,
+  .reveal-in .planet-label {
+    animation-delay: calc(350ms + var(--i, 0) * 90ms);
+  }
+
+  .reveal-in .planet-label {
+    animation: fade-in 500ms var(--ease-premium) both;
+    animation-delay: calc(350ms + var(--i, 0) * 90ms);
+  }
+
+  /* Skills: constellation lines draw in, stars fade in one by one. */
+  .reveal-in .edge-line {
+    stroke-dasharray: 1;
+    animation: draw 900ms var(--ease-premium) both;
+    animation-delay: calc(var(--i, 0) * 35ms);
+  }
+
+  .reveal-in .star-pop,
+  .reveal-in .star-label {
+    animation: fade-in 500ms var(--ease-premium) both;
+    animation-delay: calc(250ms + var(--i, 0) * 60ms);
+  }
+
+  /* A card that becomes visible (a new selection) fades in. */
+  .card-in:not([hidden]) {
+    animation: fade-in 250ms ease-out;
+  }
+
+  /* Planets and stars grow slightly on hover and keyboard focus. */
+  .map-node {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 250ms var(--ease-premium);
+  }
+
+  .planet-layer:has(> button:hover, > button:focus-visible) .map-node,
+  .map-node[data-active="true"] {
+    transform: scale(1.15);
+  }
+
+  /* The screenshot dialog fades and scales in from 0.98, and back out. */
+  dialog.dialog-motion {
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+      opacity 250ms ease-out,
+      transform 250ms ease-out,
+      overlay 250ms allow-discrete,
+      display 250ms allow-discrete;
+  }
+
+  dialog.dialog-motion[open] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @starting-style {
+    dialog.dialog-motion[open] {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
+
+  /* One short teal pulse on a project card reached through "Used in". */
+  .pulse::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    pointer-events: none;
+    animation: pulse 900ms ease-out both;
+  }
+
+  /* Underlines that grow from the start edge on hover and focus. */
+  .link-grow {
+    position: relative;
+  }
+
+  .link-grow::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 8px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms var(--ease-premium);
+  }
+
+  [dir="rtl"] .link-grow::after {
+    transform-origin: right;
+  }
+
+  .link-grow:hover::after,
+  .link-grow:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+/* The clip for masked headings. Harmless without motion: the text simply sits in place. */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.mask-line > span {
+  display: inline-block;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    transform: translateY(16px);
+  }
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes hero-from-end {
+  from {
+    opacity: 0;
+    transform: translateX(var(--hero-from-end, 16px));
+  }
+}
+
+@keyframes mask-up {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+}
+
+/* Fast mode prints as a plain one-pager: white page, black text, no buttons or site chrome. */
+@media print {
+  /* color-scheme: dark would otherwise paint the page dark behind transparent elements. */
+  :root {
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000;
+  }
+
+  *,
+  *::before,
+  *::after {
+    color: #000 !important;
+    background: transparent !important;
+    border-color: #ccc !important;
+  }
+
+  header,
+  footer,
+  .btn,
+  button,
+  a[href="#main"] {
+    display: none !important;
+  }
 }
