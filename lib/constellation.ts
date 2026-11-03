@@ -3,6 +3,8 @@ import type { Skill } from "@/content/skills";
 import { effectiveUsedIn, starSkills } from "./status";
 
 export const CONSTELLATION_VIEWBOX = { width: 340, height: 260 } as const;
+// Star labels face away from this point, like planet labels face away from the sun.
+export const CONSTELLATION_CENTER = { x: 170, y: 130 } as const;
 
 const BASE_STAR_RADIUS = 3;
 const STAR_RADIUS_PER_PROJECT = 0.4;

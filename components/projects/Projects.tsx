@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { projects } from "@/content/projects";
-import { defaultSelectedProject, visibleProjects } from "@/lib/status";
+import { visibleProjects } from "@/lib/status";
 import { ProjectCard } from "./ProjectCard";
 import { ProjectsView } from "./ProjectsView";
 
@@ -24,7 +24,6 @@ export function Projects() {
           id: project.id,
           card: <ProjectCard project={project} />,
         }))}
-        defaultSelectedId={defaultSelectedProject(projects)?.id ?? visible[0].id}
         sunLabel={t("sun")}
         listViewLabel={common("listView")}
         mapViewLabel={common("mapView")}

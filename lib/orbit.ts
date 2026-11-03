@@ -13,6 +13,7 @@ const DRIFT_SAMPLES = 48;
 const GOLDEN_ANGLE_RADIANS = 2.39996;
 const LABEL_HEIGHT_PX = 18;
 const LABEL_CHAR_WIDTH_PX = 7.5;
+const LABEL_CAPITAL_EXTRA_PX = 2.5;
 // The map is narrowest on a 360px screen. Labels are a fixed 13px, so they take the most room there.
 const MIN_MAP_WIDTH_PX = 328;
 
@@ -68,15 +69,22 @@ export type Box = { left: number; right: number; top: number; bottom: number };
 
 const pxToUnits = (px: number) => (px * STAR_SYSTEM_VIEWBOX.width) / MIN_MAP_WIDTH_PX;
 
-// A slightly generous estimate, in px at the fixed 13px label size.
+// A slightly generous estimate, in px at the fixed 13px label size. Capitals are wider in Inter.
+// Checked against measured widths: every label measures at or under its estimate.
 export function estimateLabelWidth(name: string): number {
-  return name.length * LABEL_CHAR_WIDTH_PX;
+  const capitals = name.match(/[A-Z]/g)?.length ?? 0;
+  return name.length * LABEL_CHAR_WIDTH_PX + capitals * LABEL_CAPITAL_EXTRA_PX;
 }
 
-// The side facing away from the sun. Falls back to above or below if the label would leave the map.
-export function labelSide(point: Point, radius: number, widthPx: number): LabelSide {
-  const dx = point.x - SUN.x;
-  const dy = point.y - SUN.y;
+// The side facing away from the center (the sun by default). Falls back to above or below if the label would leave the map.
+export function labelSide(
+  point: Point,
+  radius: number,
+  widthPx: number,
+  center: Point = SUN,
+): LabelSide {
+  const dx = point.x - center.x;
+  const dy = point.y - center.y;
   const reach = radius + LABEL_GAP + pxToUnits(widthPx);
   const fitsBeside =
     dx > 0 ? point.x + reach <= STAR_SYSTEM_VIEWBOX.width : point.x - reach >= 0;

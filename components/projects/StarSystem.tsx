@@ -1,42 +1,26 @@
 "use client";
 
 import { animate } from "motion/mini";
-import {
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  type CSSProperties,
-} from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Project } from "@/content/projects";
 import { INTRO_EVENT } from "@/lib/intro";
 import {
   driftPeriodMs,
   driftTransforms,
   estimateLabelWidth,
-  LABEL_GAP,
   labelSide,
   ORBIT_RADII,
   planetRadius,
   projectPosition,
   STAR_SYSTEM_VIEWBOX,
   SUN,
-  toPercent,
-  type LabelSide,
-  type Point,
 } from "@/lib/orbit";
+import { atPoint, labelStyle } from "../mapPlacement";
 
 const MOTION_QUERY =
   "(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
 const SELECTED_RING_GAP = 4;
 const VIEW_BOX = `0 0 ${STAR_SYSTEM_VIEWBOX.width} ${STAR_SYSTEM_VIEWBOX.height}`;
-
-const LABEL_TRANSFORMS: Record<LabelSide, string> = {
-  start: "translate(-100%, -50%)",
-  end: "translateY(-50%)",
-  above: "translate(-50%, -100%)",
-  below: "translateX(-50%)",
-};
 
 export type Planet = { project: Project; name: string };
 
@@ -44,22 +28,6 @@ function subscribeToMotionQuery(onChange: () => void) {
   const query = window.matchMedia(MOTION_QUERY);
   query.addEventListener("change", onChange);
   return () => query.removeEventListener("change", onChange);
-}
-
-function atPoint(point: Point): CSSProperties {
-  const percent = toPercent(point, STAR_SYSTEM_VIEWBOX);
-  return { left: `${percent.x}%`, top: `${percent.y}%` };
-}
-
-function labelStyle(point: Point, radius: number, side: LabelSide): CSSProperties {
-  const offset = radius + LABEL_GAP;
-  const anchor = {
-    start: { x: point.x - offset, y: point.y },
-    end: { x: point.x + offset, y: point.y },
-    above: { x: point.x, y: point.y - offset },
-    below: { x: point.x, y: point.y + offset },
-  }[side];
-  return { ...atPoint(anchor), transform: LABEL_TRANSFORMS[side] };
 }
 
 export function StarSystem({
@@ -155,7 +123,7 @@ export function StarSystem({
       <span
         aria-hidden="true"
         dir="auto"
-        style={{ ...atPoint(SUN), transform: "translate(-50%, -50%)" }}
+        style={{ ...atPoint(SUN, STAR_SYSTEM_VIEWBOX), transform: "translate(-50%, -50%)" }}
         className="pointer-events-none absolute text-[13px] leading-none text-accent-ink"
       >
         {sunLabel}
@@ -198,7 +166,7 @@ export function StarSystem({
             <span
               aria-hidden="true"
               dir="auto"
-              style={labelStyle(point, radius, side)}
+              style={labelStyle(point, radius, side, STAR_SYSTEM_VIEWBOX)}
               className="absolute text-[13px] leading-[18px] whitespace-nowrap text-text-soft"
             >
               {name}
@@ -208,7 +176,7 @@ export function StarSystem({
               aria-label={name}
               aria-pressed={selectedId === project.id}
               onClick={() => onSelect(project.id)}
-              style={atPoint(point)}
+              style={atPoint(point, STAR_SYSTEM_VIEWBOX)}
               className="pointer-events-auto absolute size-11 -translate-1/2 cursor-pointer rounded-full"
             />
           </div>

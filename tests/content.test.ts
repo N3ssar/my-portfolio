@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { projects } from "@/content/projects";
 import { skills } from "@/content/skills";
-import { CONSTELLATION_VIEWBOX } from "@/lib/constellation";
+import { CONSTELLATION_CENTER, CONSTELLATION_VIEWBOX, starRadius } from "@/lib/constellation";
 import {
   DRIFT_DEGREES,
   estimateLabelWidth,
@@ -23,6 +23,15 @@ import en from "@/messages/en.json";
 
 // The map's lowest label may hang into the gap below the map.
 const MAP_BOTTOM_ROOM = 16;
+
+const boxesOverlap = (a: Box, b: Box) =>
+  a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+
+function boxTouchesCircle(box: Box, center: Point, radius: number) {
+  const x = Math.max(box.left, Math.min(center.x, box.right));
+  const y = Math.max(box.top, Math.min(center.y, box.bottom));
+  return Math.hypot(x - center.x, y - center.y) < radius;
+}
 
 function keys(value: object, prefix = ""): string[] {
   return Object.entries(value).flatMap(([key, child]) =>
@@ -80,24 +89,15 @@ describe.each([
     };
   });
 
-  const overlaps = (a: Box, b: Box) =>
-    a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
-
-  function touchesCircle(box: Box, center: Point, radius: number) {
-    const x = Math.max(box.left, Math.min(center.x, box.right));
-    const y = Math.max(box.top, Math.min(center.y, box.bottom));
-    return Math.hypot(x - center.x, y - center.y) < radius;
-  }
-
   it("no two labels overlap, and no label touches another planet", () => {
     for (const a of reach) {
       for (const b of reach) {
         if (a === b) continue;
         for (const { box } of a.positions) {
           for (const other of b.positions) {
-            expect(overlaps(box, other.box), `label ${a.id} on label ${b.id}`).toBe(false);
+            expect(boxesOverlap(box, other.box), `label ${a.id} on label ${b.id}`).toBe(false);
             expect(
-              touchesCircle(box, other.point, b.radius),
+              boxTouchesCircle(box, other.point, b.radius),
               `label ${a.id} on planet ${b.id}`,
             ).toBe(false);
           }
@@ -109,7 +109,7 @@ describe.each([
   it("no label touches the sun or leaves the map", () => {
     for (const { id, positions } of reach) {
       for (const { box } of positions) {
-        expect(touchesCircle(box, SUN, SUN.r + 6), `${id} on sun`).toBe(false);
+        expect(boxTouchesCircle(box, SUN, SUN.r + 6), `${id} on sun`).toBe(false);
         expect(box.left, id).toBeGreaterThanOrEqual(0);
         expect(box.right, id).toBeLessThanOrEqual(STAR_SYSTEM_VIEWBOX.width);
         expect(box.top, id).toBeGreaterThanOrEqual(0);
@@ -182,6 +182,27 @@ describe("content", () => {
         if (other === star) continue;
         const distance = Math.hypot(star.x! - other.x!, star.y! - other.y!);
         expect(distance, `${star.id} to ${other.id}`).toBeGreaterThanOrEqual(minDistance);
+      }
+    }
+  });
+
+  it("gives every star a label that overlaps nothing and stays on the map", () => {
+    const stars = starSkills(skills).map((skill) => {
+      const point = { x: skill.x!, y: skill.y! };
+      const radius = starRadius(skill, projects);
+      const width = estimateLabelWidth(skill.label);
+      const side = labelSide(point, radius, width, CONSTELLATION_CENTER);
+      return { id: skill.id, point, radius, box: labelBox(point, radius, side, width) };
+    });
+    for (const a of stars) {
+      expect(a.box.left, a.id).toBeGreaterThanOrEqual(0);
+      expect(a.box.right, a.id).toBeLessThanOrEqual(CONSTELLATION_VIEWBOX.width);
+      expect(a.box.top, a.id).toBeGreaterThanOrEqual(0);
+      expect(a.box.bottom, a.id).toBeLessThanOrEqual(CONSTELLATION_VIEWBOX.height + MAP_BOTTOM_ROOM);
+      for (const b of stars) {
+        if (a === b) continue;
+        expect(boxesOverlap(a.box, b.box), `label ${a.id} on label ${b.id}`).toBe(false);
+        expect(boxTouchesCircle(a.box, b.point, b.radius), `label ${a.id} on star ${b.id}`).toBe(false);
       }
     }
   });

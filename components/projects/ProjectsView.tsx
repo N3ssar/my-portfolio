@@ -1,32 +1,30 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ProjectList } from "./ProjectList";
+import { useProjectSelection } from "./ProjectSelection";
 import { StarSystem, type Planet } from "./StarSystem";
 
 export function ProjectsView({
   planets,
   cards,
-  defaultSelectedId,
   sunLabel,
   listViewLabel,
   mapViewLabel,
 }: {
   planets: Planet[];
   cards: { id: string; card: ReactNode }[];
-  defaultSelectedId: string | undefined;
   sunLabel: string;
   listViewLabel: string;
   mapViewLabel: string;
 }) {
-  const [selectedId, setSelectedId] = useState(defaultSelectedId);
-  const [showList, setShowList] = useState(false);
+  const { selectedId, select, showList, setShowList, highlightedId } = useProjectSelection();
 
   return (
     <>
       <button
         type="button"
-        onClick={() => setShowList((current) => !current)}
+        onClick={() => setShowList(!showList)}
         className="btn btn-outline btn-sm mt-4"
       >
         {showList ? mapViewLabel : listViewLabel}
@@ -40,11 +38,16 @@ export function ProjectsView({
               planets={planets}
               sunLabel={sunLabel}
               selectedId={selectedId}
-              onSelect={setSelectedId}
+              onSelect={select}
             />
           </div>
         )}
-        <ProjectList cards={cards} selectedId={selectedId} showAll={showList} />
+        <ProjectList
+          cards={cards}
+          selectedId={selectedId}
+          highlightedId={highlightedId}
+          showAll={showList}
+        />
       </div>
     </>
   );

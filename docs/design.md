@@ -68,7 +68,9 @@ i18n/
 components/
   Header.tsx  HeaderShell.tsx  Hero.tsx  ExplorerId.tsx  ExplorerStatus.tsx
   projects/Projects.tsx  projects/ProjectsView.tsx  projects/StarSystem.tsx  projects/ProjectCard.tsx  projects/ProjectList.tsx  projects/ScreenshotGallery.tsx
-  skills/Constellation.tsx  skills/SkillCard.tsx  skills/SkillGroups.tsx
+  projects/ProjectSelection.tsx   # shared selection, so Skills can point at a project
+  skills/Skills.tsx  skills/SkillsView.tsx  skills/Constellation.tsx  skills/SkillCard.tsx  skills/SkillGroups.tsx
+  mapPlacement.ts         # places HTML labels and buttons over both SVG maps
   RightNow.tsx  About.tsx  Contact.tsx  Footer.tsx
   FastModeButton.tsx  LangToggle.tsx  StatusPill.tsx
   terminal/*              # Phase 2 only
@@ -247,9 +249,11 @@ Heading `projects.title`, helper line `projects.hint`.
 Heading `skills.title`, helper `skills.hint`.
 
 - SVG constellation (viewBox 340x260) of all skills with `star: true`. Positions are fixed `x`/`y` values in `content/skills.ts`; the agent chooses balanced positions once and stores them there (no runtime layout, no layout shift).
-- Star appearance and edges follow section 4.2. Lines: 1px `--border`. Selected star: teal ring.
+- Star appearance and edges follow section 4.2. Lines: 1px `--border`. Selected star: teal ring. The first star in `content/skills.ts` is selected on load.
+- Labels: each star's `label` as HTML at a fixed 13px, placed like planet labels (section 7.3), facing away from the constellation's center (170, 130). A unit test checks that no label overlaps another label or star and that none leaves the map, on the narrowest map.
 - Interaction through overlaid HTML buttons (section 6).
-- **SkillCard** below/beside: skill name, "Currently learning" pill if `learning`, **"Used in"** (project names, each a button), and the optional note. In map view, the button selects that project in the star system and scrolls to `#projects`. In list view, it stays in list view, scrolls to that project's card and highlights it; it never switches to the map.
+- **SkillCard** below/beside: skill name, "Currently learning" pill if `learning`, **"Used in"** (project names, each a button), and the optional note. In map view, the button selects that project in the star system and scrolls to `#projects`. In list view, it stays in list view, scrolls to that project's card and highlights it with a 1px teal outline; it never switches to the map. Either way, keyboard focus moves to the project's card. Switching the Projects view clears the highlight.
+- At 1024px and up the constellation is `position: sticky`, like the star system.
 - **No skill levels, no percentages, no progress bars.** Evidence and honest status only.
 - Below the constellation: **SkillGroups**, a plain scannable list of all skills grouped by `group`, in this order: Frontend, Backend and APIs, Testing/tools/OS, Design and UI, **Currently learning** (all `learning` skills, regardless of group), **University coursework** (all `studied` skills). Chips, no colors. This is for HR and ATS scanning.
 - List view toggle shows only SkillGroups.
