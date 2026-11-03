@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import {
   createContext,
   useContext,
@@ -47,7 +48,10 @@ export function ProjectSelectionProvider({
 
   const value: ProjectSelection = {
     selectedId,
-    select: setSelectedId,
+    select: (id) => {
+      setSelectedId(id);
+      track("project_select", { project: id });
+    },
     showList,
     setShowList: (next) => {
       setShowListState(next);
@@ -57,6 +61,7 @@ export function ProjectSelectionProvider({
     showProject: (id) => {
       if (showList) setHighlightedId(id);
       else setSelectedId(id);
+      track("project_select", { project: id });
       setScrollTarget({ id });
     },
   };

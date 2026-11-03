@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { useRef, useState, type FormEvent } from "react";
 import { invalidFields, type ContactField } from "@/lib/contact";
 import { CopyButton } from "./CopyButton";
@@ -92,6 +93,7 @@ export function ContactForm({
       });
       if (response.ok) {
         setStatus("success");
+        track("contact_submit_success");
         setSubmitted(false);
         form.current?.reset();
       } else {

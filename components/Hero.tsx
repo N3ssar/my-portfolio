@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { site } from "@/content/site";
 import { ExplorerId } from "./ExplorerId";
 import { StatusPill } from "./StatusPill";
+import { TrackedLink } from "./TrackedLink";
 
 export function Hero() {
   const t = useTranslations("hero");
@@ -17,9 +18,9 @@ export function Hero() {
             <a href="#projects" className="btn btn-primary">
               {t("ctaProjects")}
             </a>
-            <a href={site.cv} download className="btn btn-outline">
+            <TrackedLink event="cv_download" href={site.cv} download className="btn btn-outline">
               {t("ctaCv")}
-            </a>
+            </TrackedLink>
           </div>
           <a
             href="#contact"

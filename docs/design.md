@@ -55,7 +55,7 @@ app/
     page.tsx              # all sections in order (section 7)
     fast/page.tsx         # Recruiter Fast Mode (section 8)
     not-found.tsx         # 404 (section 7.9)
-    [...rest]/page.tsx    # calls notFound(), so any unknown path under a locale gets the localized 404
+    [...rest]/page.tsx    # calls notFound(), so any unknown path under a locale gets the localized 404; `instant = false` because it never renders a page
   api/contact/route.ts    # POST handler (section 10)
   globals.css             # tokens via @theme
   favicon.ico             # 16 and 32px brand mark, from `pnpm generate:brand`
@@ -73,7 +73,7 @@ components/
   skills/Skills.tsx  skills/SkillsView.tsx  skills/Constellation.tsx  skills/SkillCard.tsx  skills/SkillGroups.tsx
   mapPlacement.ts         # places HTML labels and buttons over both SVG maps
   RightNow.tsx  About.tsx  Contact.tsx  ContactForm.tsx  CopyButton.tsx  Footer.tsx
-  FastModeButton.tsx  LangToggle.tsx  StatusPill.tsx  BackToTop.tsx
+  FastModeButton.tsx  LangToggle.tsx  StatusPill.tsx  BackToTop.tsx  PersonJsonLd.tsx  TrackedLink.tsx
   terminal/*              # Phase 2 only
 content/
   site.ts                 # non-translatable facts (links, contact)
@@ -85,7 +85,7 @@ lib/
   status.ts               # helpers: isVisibleLink, projectsByStatus, learningSkills, etc.
   constellation.ts        # computes edges from usedIn
   orbit.ts                # computes planet x/y from orbit + angle
-  contact.ts  ratelimit.ts
+  contact.ts  ratelimit.ts  seo.ts
   contact-delivery.ts     # Resend and Telegram; imported only by the API route
 tests/                    # Vitest unit tests
 e2e/                      # Playwright smoke tests
@@ -195,8 +195,8 @@ An "N" whose two stems are a left square bracket "[" and a right square bracket 
 - Every visual (star system, constellation) has an equivalent **list view** and a visible "List view / Map view" toggle.
 - No layout shift: reserve space for SVGs with a fixed aspect ratio.
 - Performance target: Lighthouse 90+ on mobile for Performance, Accessibility, SEO, Best Practices. Server-render all text. **No text is ever rendered with opacity 0 on first paint** (protects LCP and crawlers).
-- SEO: per-locale `<title>` and description, Open Graph image, `hreflang` alternates, JSON-LD `Person`, sitemap, robots.
-- Analytics: `@vercel/analytics`. Track custom events: `fast_mode_open`, `cv_download`, `contact_submit_success`, `project_select` (with project id). No personal data in events.
+- SEO: per-locale `<title>` and description, Open Graph and Twitter image (`public/og.png`), canonical URL and `hreflang` alternates (en, ar, x-default) on every page, JSON-LD `Person` on the home page, sitemap (both locales, home and Fast mode, with alternates), robots (disallows `/api/`). Helpers in `lib/seo.ts`. The origin comes from `NEXT_PUBLIC_SITE_URL`, else Vercel's production domain, else localhost.
+- Analytics: `@vercel/analytics` (`<Analytics />` in the layout). Custom events: `fast_mode_open` (header button), `cv_download` (hero and Fast mode CV links), `contact_submit_success` (form), `project_select` with the project id (planet buttons and "Used in" buttons). No personal data in events.
 
 ## 7. Sections (in this exact order)
 
@@ -1100,7 +1100,7 @@ The repo itself is a code sample a reviewer will open. Treat it that way.
 - `app/api/contact/route.ts` (with providers mocked): honeypot returns 200 and sends nothing; oversized body returns 413; one channel failing still returns 200; both failing returns 502 with no provider details.
 - A test that `messages/en.json` and `messages/ar.json` have exactly the same keys.
 
-**End-to-end (Playwright, `e2e/`), mobile and desktop viewports:**
+**End-to-end (Playwright, `e2e/`, config in `playwright.config.ts`), mobile and desktop viewports, against a production build on port 3100, with reduced motion so planets hold still:**
 - `/en` and `/ar` load; `dir` is correct; hero text is visible immediately.
 - Selecting a planet updates the card; the list view toggle works with the keyboard.
 - A "Used in" link in the skills card selects the project.

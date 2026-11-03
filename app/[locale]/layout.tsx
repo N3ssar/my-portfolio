@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_Arabic, Inter, JetBrains_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -7,6 +8,7 @@ import { BackToTop } from "@/components/BackToTop";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { routing } from "@/i18n/routing";
+import { pageMetadata } from "@/lib/seo";
 import "../globals.css";
 
 const inter = Inter({
@@ -39,7 +41,7 @@ export async function generateMetadata({
   if (!hasLocale(routing.locales, locale)) notFound();
 
   const t = await getTranslations({ locale, namespace: "meta" });
-  return { title: t("title"), description: t("description") };
+  return pageMetadata({ locale, path: "", title: t("title"), description: t("description") });
 }
 
 export default async function LocaleLayout({
@@ -74,6 +76,7 @@ export default async function LocaleLayout({
           </main>
           <Footer />
           <BackToTop label={t("backToTop")} />
+          <Analytics />
         </NextIntlClientProvider>
       </body>
     </html>

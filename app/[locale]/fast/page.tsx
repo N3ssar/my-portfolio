@@ -4,16 +4,23 @@ import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { SkillGroups } from "@/components/skills/SkillGroups";
+import { TrackedLink } from "@/components/TrackedLink";
 import { projects } from "@/content/projects";
 import { site } from "@/content/site";
 import { Link } from "@/i18n/navigation";
+import { pageMetadata } from "@/lib/seo";
 import { isVisibleLink, projectsByStatus, topProjects } from "@/lib/status";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/fast">): Promise<Metadata> {
   const { locale } = await params;
   const fast = await getTranslations({ locale, namespace: "fast" });
   const meta = await getTranslations({ locale, namespace: "meta" });
-  return { title: `${fast("title")} | ${meta("title")}`, description: meta("description") };
+  return pageMetadata({
+    locale,
+    path: "/fast",
+    title: `${fast("title")} | ${meta("title")}`,
+    description: meta("description"),
+  });
 }
 
 const external = { target: "_blank", rel: "noopener noreferrer" } as const;
@@ -55,9 +62,9 @@ export default function FastPage() {
             <h1 className="mt-2">{site.name}</h1>
             <p className="mt-4 text-text-soft">{hero("id.roleValue")}</p>
             <div className="mt-6 flex flex-col gap-3 xs:flex-row">
-              <a href={site.cv} download className="btn btn-primary">
+              <TrackedLink event="cv_download" href={site.cv} download className="btn btn-primary">
                 {hero("ctaCv")}
-              </a>
+              </TrackedLink>
               <a href="#fast-contact" className="btn btn-outline">
                 {t("contact")}
               </a>
