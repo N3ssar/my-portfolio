@@ -29,7 +29,7 @@ const LINK = "underline underline-offset-4 hover:text-accent";
 // The site's card style, used for every Fast mode block.
 function Card({ title, id, children }: { title: string; id?: string; children: ReactNode }) {
   return (
-    <section id={id} className="break-inside-avoid scroll-mt-20 rounded-xl border border-border bg-surface p-4 sm:p-6">
+    <section id={id} className="card-hover break-inside-avoid scroll-mt-20 rounded-xl border border-border bg-surface p-4 hover:border-text-muted sm:p-6">
       <h2>{title}</h2>
       <div className="mt-4">{children}</div>
     </section>

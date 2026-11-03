@@ -44,6 +44,13 @@ export function ProjectSelectionProvider({
     const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     target?.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
     card?.focus({ preventScroll: true });
+    if (card && smooth) {
+      // Restart the pulse even when the same card is reached twice in a row.
+      card.classList.remove("pulse");
+      void card.offsetWidth;
+      card.classList.add("pulse");
+      card.addEventListener("animationend", () => card.classList.remove("pulse"), { once: true });
+    }
   }, [scrollTarget, showList]);
 
   const value: ProjectSelection = {

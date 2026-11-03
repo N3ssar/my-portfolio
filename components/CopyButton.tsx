@@ -38,8 +38,17 @@ export function CopyButton({
   return (
     <button type="button" onClick={copy} className={className}>
       {children}
-      <span aria-live="polite" className="text-accent">
-        {copied ? copiedLabel : label}
+      <span aria-live="polite" className="inline-flex min-w-8 justify-end text-accent">
+        {copied ? (
+          <>
+            <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.75">
+              <path d="M3 8.5l3 3 7-7" />
+            </svg>
+            <span className="sr-only">{copiedLabel}</span>
+          </>
+        ) : (
+          label
+        )}
       </span>
     </button>
   );

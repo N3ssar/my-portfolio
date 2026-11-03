@@ -32,7 +32,7 @@ export function BackToTop({ label }: { label: string }) {
       aria-label={label}
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`fixed bottom-[max(1rem,calc(env(safe-area-inset-bottom)+0.5rem))] end-[max(1rem,env(safe-area-inset-left),env(safe-area-inset-right))] z-40 flex size-11 cursor-pointer items-center justify-center rounded-full border border-border bg-surface text-text hover:text-accent motion-safe:transition-[opacity,visibility] motion-safe:duration-200 motion-safe:ease-out ${visible ? "visible opacity-100" : "invisible opacity-0"}`}
+      className={`fixed bottom-[max(1rem,calc(env(safe-area-inset-bottom)+0.5rem))] end-[max(1rem,env(safe-area-inset-left),env(safe-area-inset-right))] z-40 flex size-11 cursor-pointer items-center justify-center rounded-full border border-border bg-surface text-text hover:text-accent motion-safe:transition-[opacity,translate,visibility] motion-safe:duration-200 motion-safe:ease-out ${visible ? "visible translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"}`}
     >
       <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M8 13V3M4 7l4-4 4 4" />

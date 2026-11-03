@@ -2,6 +2,7 @@ import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Hero } from "@/components/Hero";
 import { PersonJsonLd } from "@/components/PersonJsonLd";
+import { RevealObserver } from "@/components/RevealObserver";
 import { RightNow } from "@/components/RightNow";
 import { Projects } from "@/components/projects/Projects";
 import { ProjectSelectionProvider } from "@/components/projects/ProjectSelection";
@@ -23,6 +24,7 @@ export default function HomePage() {
       <RightNow />
       <About />
       <Contact />
+      <RevealObserver />
     </>
   );
 }

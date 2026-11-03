@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { Edge } from "@/lib/constellation";
 import { CONSTELLATION_CENTER, CONSTELLATION_VIEWBOX } from "@/lib/constellation";
 import { estimateLabelWidth, labelSide } from "@/lib/orbit";
@@ -29,6 +30,7 @@ export function Constellation({
   onSelect: (id: string) => void;
 }) {
   const byId = new Map(stars.map((star) => [star.id, star]));
+  const [activeId, setActiveId] = useState<string>();
 
   return (
     // Like the star system, the constellation is never mirrored in RTL.
@@ -64,6 +66,8 @@ export function Constellation({
               </>
             )}
             <circle
+              className="map-node"
+              data-active={activeId === star.id}
               r={star.radius}
               fill={star.learning ? "var(--bg)" : "var(--text)"}
               stroke={star.learning ? "var(--text)" : "none"}
@@ -93,6 +97,12 @@ export function Constellation({
           aria-label={star.label}
           aria-pressed={selectedId === star.id}
           onClick={() => onSelect(star.id)}
+          onPointerEnter={() => setActiveId(star.id)}
+          onPointerLeave={() => setActiveId(undefined)}
+          onFocus={(event) => {
+            if (event.currentTarget.matches(":focus-visible")) setActiveId(star.id);
+          }}
+          onBlur={() => setActiveId(undefined)}
           style={atPoint(star, CONSTELLATION_VIEWBOX)}
           className="absolute size-11 -translate-1/2 cursor-pointer rounded-full"
         />

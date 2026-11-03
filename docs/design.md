@@ -164,12 +164,17 @@ Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globa
 | `--accent-ink` | `#032B27` | text on accent backgrounds |
 | `--danger` | `#FF8A8A` | form errors only |
 
-**Accent rule (strict):** teal appears only on (a) the sun, (b) primary buttons, (c) the availability dot, (d) selected planet/star ring, (e) link hover and focus rings, (f) small section eyebrow labels, (g) the Explorer ID status text, (h) the brand mark, (i) the active nav anchor underline, (j) the ProjectCard start border and the highlight ring on a selected card, (k) the action words in Contact, (l) the one rare dot in the background starfield, (m) the faint glow at the top of the hero. Nothing else is colored. Status pills ("In progress", "Currently learning") are **not** teal: `--surface` background, 1px `--border`, `--text-soft` text. No gradients other than the starfield dots and the hero glow, no glows beyond a subtle 0.18 opacity halo on the sun and selected node and the hero glow, no neon.
+**Accent rule (strict):** teal appears only on (a) the sun, (b) primary buttons, (c) the availability dot, (d) selected planet/star ring, (e) link hover and focus rings, (f) small section eyebrow labels, (g) the Explorer ID status text, (h) the brand mark, (i) the active nav anchor underline, (j) the ProjectCard start border and the highlight ring on a selected card, (k) the action words in Contact, (l) the one rare dot in the background starfield, (m) the faint glow at the top of the hero, (n) the scrollbar thumb, (o) text selection (`--accent` background, `--accent-ink` text), (p) the text cursor (`caret-color`) and the focused border of form inputs, (q) the one-time pulse on a project card reached through "Used in", (r) the Copy button's check icon. Nothing else is colored. Status pills ("In progress", "Currently learning") are **not** teal: `--surface` background, 1px `--border`, `--text-soft` text. No gradients other than the starfield dots and the hero glow, no glows beyond a subtle 0.18 opacity halo on the sun and selected node and the hero glow, no neon.
 
 ### Background
 - **Starfield:** the page background is `--bg` with a subtle, static starfield. Tiny dots of 1 to 1.5px, mostly `--text` at 25 to 60% opacity, with one rare `--accent` dot. Pure CSS (repeating `radial-gradient` layers with tile sizes that share no factors, so it doesn't look like a grid), no images, no JS, no animation. Cards, inputs and the header sit on their own backgrounds, so dots never sit behind small text in them.
 - **Hero glow:** one faint `--accent` radial glow (14% opacity) at the top of the hero section only. It fades out before the section's edges.
 - **Contrast:** at the brightest point of the glow, `--text-muted` still meets WCAG AA (about 4.6:1). Dots are smaller than a text stroke, so they don't change text contrast.
+
+### Brand details
+- **Scrollbar:** thin, `--bg` track, `--accent` thumb at about 50% opacity, full `--accent` on hover and while dragging. `::-webkit-scrollbar` styles for Chromium and Safari, `scrollbar-color` for Firefox (which has no hover state). Inner scroll containers get the same style.
+- **Selection:** `--accent` background with `--accent-ink` text.
+- **Text cursor:** `caret-color: var(--accent)` in inputs and textareas.
 
 ### Brand mark
 An "N" whose two stems are a left square bracket "[" and a right square bracket "]", joined by a diagonal from the top-left corner to the bottom-right corner. `--accent` strokes on a `--surface` rounded square, square line caps, miter joins. The stroke is thicker at 24px and below so it stays legible at 16px. Used as `app/icon.svg`, `app/favicon.ico` (16 and 32px, for browsers that request it directly), `app/apple-icon.png`, the header mark, the Explorer ID fallback when there is no photo, and the logo on `og.png`. Component: `components/BrandMark.tsx`. `pnpm generate:brand` regenerates the favicon and the two PNGs (`scripts/generate-brand-assets.mjs`).
@@ -184,7 +189,15 @@ An "N" whose two stems are a left square bracket "[" and a right square bracket 
 - Container: max-width 1080px, horizontal padding 16px (mobile) / 24px.
 - Radius: 8px controls, 12px cards, 16px large panels, 999px pills.
 - Borders: 1px `--border` (use 1px, not 0.5px, for consistent rendering on all screens). No shadows.
-- Motion: ease-out, 200 to 400ms for UI; planet drift very slow. **Respect `prefers-reduced-motion`**: no countdown, no drift; show the final static state.
+- Motion: calm and consistent, nothing flashy. 150 to 400ms per animation (the hero sequence about 800ms in total), ease-out, 12px of movement at most, no bounce, no parallax, each reveal runs once. Only `transform` and `opacity` animate; hover colour and border transitions are the one exception. CSS first; Motion only where exit animations or presence need it. Content is fully visible without JavaScript. **`prefers-reduced-motion` turns all of it off**: no entrance, reveals, pulses or transitions, no countdown, no drift; the final static state shows. Planet drift stays very slow.
+  - **Hero entrance:** the pill, subtitle, buttons, contact link and Explorer ID card fade up in turn (90ms apart). The `h1` is visible from the first paint and only rises 12px, so it never delays LCP.
+  - **Header:** hides and shows smoothly; the active-section underline is one bar that slides between links. The menu icon morphs into an X; the sheet slides and fades in, links stagger in, and it all reverses on close.
+  - **Sections below the hero** fade up once as they enter the viewport. Only sections that start below the fold are hidden, and only once JavaScript runs with motion allowed. Right now rows and About log entries stagger in.
+  - **Projects and Skills:** a newly selected card fades in; planets and stars scale slightly on hover and keyboard focus; the screenshot dialog fades and scales from 0.98; a card reached through "Used in" gets one short teal outline pulse.
+  - **Contact:** inputs move their border to teal on focus; the Copy button shows a check icon for about 2 seconds.
+  - **Back to top** fades and slides in and out.
+  - **Hover:** smooth colour and border transitions on links, buttons, inputs and cards; footer link underlines grow from the start edge.
+  - **Fast mode:** hover states only, no reveals.
 
 ## 6. Global layout and rules
 
@@ -194,7 +207,7 @@ An "N" whose two stems are a left square bracket "[" and a right square bracket 
 - **Interactive nodes in SVG visuals:** the SVG is decorative (`aria-hidden="true"`). Interaction happens through real HTML `<button>` elements absolutely positioned over the SVG, at the same coordinates (converted to percentages of the viewBox), each with an accessible name (project or skill name) and `aria-pressed` for the selected one. Each button has an invisible hit area of at least 44x44px.
 - Every visual (star system, constellation) has an equivalent **list view** and a visible "List view / Map view" toggle.
 - No layout shift: reserve space for SVGs with a fixed aspect ratio.
-- Performance target: Lighthouse 90+ on mobile for Performance, Accessibility, SEO, Best Practices. Server-render all text. **No text is ever rendered with opacity 0 on first paint** (protects LCP and crawlers).
+- Performance target: Lighthouse 90+ on mobile for Performance, Accessibility, SEO, Best Practices. Server-render all text. **The LCP element (the hero `h1`) is never rendered with opacity 0**, and no text is hidden without JavaScript (protects LCP and crawlers).
 - SEO: per-locale `<title>` and description, Open Graph and Twitter image (`public/og.png`), canonical URL and `hreflang` alternates (en, ar, x-default) on every page, JSON-LD `Person` on the home page, sitemap (both locales, home and Fast mode, with alternates), robots (disallows `/api/`). Helpers in `lib/seo.ts`. The origin comes from `NEXT_PUBLIC_SITE_URL`, else Vercel's production domain, else localhost.
 - Analytics: `@vercel/analytics` (`<Analytics />` in the layout). Custom events: `fast_mode_open` (header button), `cv_download` (hero and Fast mode CV links), `contact_submit_success` (form), `project_select` with the project id (planet buttons and "Used in" buttons). No personal data in events.
 
@@ -210,7 +223,7 @@ Order: **Header, Hero, Projects, Skills, Right now, About, Contact, Footer.**
 - Behavior: background `--bg` at 80% with backdrop blur, 1px bottom border; hides on scroll down, shows on scroll up. Active anchor gets a teal underline.
 
 ### 7.2 Hero
-Purpose: answer "who, what, available, contact" in 3 seconds. **All hero content is visible from the first paint.**
+Purpose: answer "who, what, available, contact" in 3 seconds. **All hero content is in the server-rendered HTML; the `h1` is visible from the first paint, and the rest fades in within about 800ms (section 5).**
 
 Layout (mobile single column; desktop two columns with the Explorer ID on the end side):
 1. Availability pill: teal dot + `hero.availability`.
@@ -293,7 +306,7 @@ Simple centered panel: `notFound.title`, `notFound.text`, and a primary button `
 
 Route: `/{locale}/fast`. Entry points: the **Fast mode** header button and a shareable direct link.
 
-The same site, just calmer: the same 1080px container, tokens, type scale, spacing, static starfield and hero glow. No maps, no SVG visuals, no motion.
+The same site, just calmer: the same 1080px container, tokens, type scale, spacing, static starfield and hero glow. No maps, no SVG visuals, no entrance or scroll motion (hover states only).
 
 Content, top to bottom:
 1. **Top block**, mirroring the hero (two columns at 1024px+, stacked below): on the start side `fast.title` (small, muted), the name as `h1` (never larger than the hero title), the role, and two buttons: **Download CV** and **Contact** (anchors to the contact card). On the end side, a facts card like the Explorer ID: Based in, Available and Military status (`hero.id.*` labels and values).

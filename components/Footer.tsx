@@ -22,7 +22,7 @@ export function Footer() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center text-text-soft hover:text-accent"
+                className="link-grow inline-flex min-h-11 items-center text-text-soft hover:text-accent"
               >
                 {label}
               </a>

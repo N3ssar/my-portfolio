@@ -48,7 +48,7 @@ export function ScreenshotGallery({
       </div>
       <dialog
         ref={dialog}
-        className="m-auto max-w-[90vw] rounded-2xl border border-border bg-surface p-4 text-text backdrop:bg-bg/80"
+        className="dialog-motion m-auto max-w-[90vw] rounded-2xl border border-border bg-surface p-4 text-text backdrop:bg-bg/80"
       >
         <button
           type="button"

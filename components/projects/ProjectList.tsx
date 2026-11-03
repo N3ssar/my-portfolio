@@ -23,7 +23,7 @@ export function ProjectList({
           hidden={!showAll && id !== selectedId}
           data-selected={!showAll && id === selectedId}
           data-highlighted={showAll && id === highlightedId}
-          className="group scroll-mt-20 rounded-xl outline-offset-4 data-[highlighted=true]:outline data-[highlighted=true]:outline-1 data-[highlighted=true]:outline-accent"
+          className="group card-in relative scroll-mt-20 rounded-xl outline-offset-4 data-[highlighted=true]:outline data-[highlighted=true]:outline-1 data-[highlighted=true]:outline-accent"
         >
           {card}
         </li>

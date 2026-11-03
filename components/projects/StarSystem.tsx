@@ -144,7 +144,7 @@ export function StarSystem({
               else layers.current.delete(project.id);
             }}
             style={{ willChange: canDrift ? "transform" : undefined }}
-            className="pointer-events-none absolute inset-0"
+            className="planet-layer pointer-events-none absolute inset-0"
           >
             <svg aria-hidden="true" viewBox={VIEW_BOX} className="absolute inset-0 size-full overflow-visible">
               <g transform={`translate(${point.x} ${point.y})`}>
@@ -155,6 +155,7 @@ export function StarSystem({
                   </>
                 )}
                 <circle
+                  className="map-node"
                   r={radius}
                   fill={inProgress ? "none" : color}
                   stroke={inProgress ? color : "none"}

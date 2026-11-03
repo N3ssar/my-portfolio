@@ -167,6 +167,198 @@
   }
 }
 
+/* Brand details: scrollbar, selection and caret. */
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+input,
+textarea {
+  caret-color: var(--accent);
+}
+
+/* Firefox: no hover state is possible, so the thumb stays at about 50%. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent) 50%, transparent) var(--bg);
+  }
+}
+
+/* Chromium and Safari, for the page and every inner scroll container. */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  background: var(--accent);
+}
+
+/*
+ * Motion layer. Rules: 150 to 400ms (the hero sequence about 800ms in total), ease-out,
+ * 12px of movement at most, no bounce, each reveal runs once, only transform and opacity animate.
+ * Colour and border transitions on hover are the one exception. Everything here is off with reduced motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Smooth hover states on links, buttons, inputs and cards. In the base layer, so a
+     component's own transition utilities still win. */
+  @layer base {
+    a,
+    button,
+    input,
+    textarea,
+    .card-hover {
+      transition-property: color, background-color, border-color;
+      transition-duration: 200ms;
+      transition-timing-function: ease-out;
+    }
+  }
+
+  /* Hero entrance. The h1 only rises, so it is visible from the first paint (it is the LCP element). */
+  .enter {
+    animation: fade-up 400ms ease-out both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  .enter-rise {
+    animation: rise 400ms ease-out both;
+  }
+
+  /* Scroll reveals. Only set by JavaScript, and only on sections that start below the fold. */
+  .reveal-pending {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .reveal-in {
+    animation: fade-up 400ms ease-out both;
+  }
+
+  .reveal-in [data-stagger] {
+    animation: fade-up 300ms ease-out both;
+    animation-delay: calc(150ms + var(--i, 0) * 70ms);
+  }
+
+  /* A card that becomes visible (a new selection) fades in. */
+  .card-in:not([hidden]) {
+    animation: fade-in 200ms ease-out;
+  }
+
+  /* Planets and stars grow slightly on hover and keyboard focus. */
+  .map-node {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 200ms ease-out;
+  }
+
+  .planet-layer:has(> button:hover, > button:focus-visible) .map-node,
+  .map-node[data-active="true"] {
+    transform: scale(1.15);
+  }
+
+  /* The screenshot dialog fades and scales in from 0.98, and back out. */
+  dialog.dialog-motion {
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+      opacity 200ms ease-out,
+      transform 200ms ease-out,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  dialog.dialog-motion[open] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @starting-style {
+    dialog.dialog-motion[open] {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
+
+  /* One short teal pulse on a project card reached through "Used in". */
+  .pulse::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    pointer-events: none;
+    animation: pulse 900ms ease-out both;
+  }
+
+  /* Underlines that grow from the start edge on hover and focus. */
+  .link-grow {
+    position: relative;
+  }
+
+  .link-grow::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 8px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 250ms ease-out;
+  }
+
+  [dir="rtl"] .link-grow::after {
+    transform-origin: right;
+  }
+
+  .link-grow:hover::after,
+  .link-grow:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(12px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+}
+
 /* Fast mode prints as a plain one-pager: white page, black text, no buttons or site chrome. */
 @media print {
   /* color-scheme: dark would otherwise paint the page dark behind transparent elements. */

@@ -1,4 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
+import type { CSSProperties } from "react";
 import { projects } from "@/content/projects";
 import { skills } from "@/content/skills";
 import { rightNowRows, type RightNowRow } from "@/lib/status";
@@ -24,14 +25,20 @@ export function RightNow() {
   const label = (key: RightNowRow["key"]) => (key === "looking" ? t("looking.label") : t(key));
 
   return (
-    <section id="right-now" className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
+    <section id="right-now" data-reveal className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
       <h2>{t("title")}</h2>
       <div className="mt-8 rounded-xl bg-surface p-4 sm:p-6">
         <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-[auto_minmax(0,1fr)]">
-          {listRows.map((row) => (
+          {listRows.map((row, index) => (
             <div key={row.key} className="contents">
-              <dt className="text-sm text-text-muted">{label(row.key)}</dt>
-              <dd className={row.comingSoon ? "text-text-muted" : "text-text-soft"}>
+              <dt data-stagger style={{ "--i": index } as CSSProperties} className="text-sm text-text-muted">
+                {label(row.key)}
+              </dt>
+              <dd
+                data-stagger
+                style={{ "--i": index } as CSSProperties}
+                className={row.comingSoon ? "text-text-muted" : "text-text-soft"}
+              >
                 {row.comingSoon ? (
                   t("comingSoon")
                 ) : row.values.length === 1 ? (

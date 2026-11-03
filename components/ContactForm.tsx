@@ -121,7 +121,7 @@ export function ContactForm({
           "aria-invalid": invalid,
           "aria-describedby": invalid ? `contact-${id}-error` : undefined,
           className:
-            "w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-text placeholder:text-text-muted aria-invalid:border-danger",
+            "w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-text placeholder:text-text-muted focus:border-accent aria-invalid:border-danger",
         };
         return (
           <div key={id}>

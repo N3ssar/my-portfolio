@@ -12,7 +12,7 @@ export function Projects() {
   if (visible.length === 0) return null;
 
   return (
-    <section id="projects" className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
+    <section id="projects" data-reveal className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
       <h2>{t("title")}</h2>
       <p className="mt-3 text-text-soft">{t("hint")}</p>
       <ProjectsView

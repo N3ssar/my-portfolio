@@ -48,7 +48,7 @@ export function SkillsView({
         </div>
         <ul className="min-w-0">
           {cards.map(({ id, card }) => (
-            <li key={id} hidden={id !== selectedId}>
+            <li key={id} hidden={id !== selectedId} className="card-in">
               {card}
             </li>
           ))}

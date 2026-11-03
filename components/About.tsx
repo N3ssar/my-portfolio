@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import type { CSSProperties } from "react";
 
 type LogEntry = { label: string; text: string };
 
@@ -21,13 +22,13 @@ export function About() {
   const log: LogEntry[] = t.raw("log");
 
   return (
-    <section id="about" className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
+    <section id="about" data-reveal className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
       <h2>{t("title")}</h2>
 
       {/* Captain's log: plain paragraphs, no timeline graphic. */}
       <ol className="mt-8 max-w-[720px] space-y-6">
-        {log.map(({ label, text }) => (
-          <li key={label}>
+        {log.map(({ label, text }, index) => (
+          <li key={label} data-stagger style={{ "--i": index } as CSSProperties}>
             <span dir="ltr" className="font-mono text-xs text-text-muted">
               {label}
             </span>
