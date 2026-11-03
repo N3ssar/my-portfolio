@@ -776,7 +776,6 @@ Copy as is. Strings marked `TODO` are for the owner.
   },
   "fast": {
     "title": "Quick summary",
-    "military": "Military status: Exempted",
     "topProjects": "Top projects",
     "inProgress": "In progress",
     "skills": "Skills",
@@ -1061,7 +1060,6 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
   },
   "fast": {
     "title": "ملخص سريع",
-    "military": "الخدمة العسكرية: معفى",
     "topProjects": "أبرز المشاريع",
     "inProgress": "قيد التطوير",
     "skills": "المهارات",
