@@ -19,7 +19,11 @@ export const projects: Project[] = [
   { id: "nabd-masr", status: "done", kind: "frontend", featured: true, orbit: 1, angle: 40,
     stack: ["React", "TypeScript", "Material UI", "Vite"],
     links: { live: null, repo: "https://github.com/N3ssar/nabd-masr" },
-    images: [] }, // TODO owner: copy docs/landing-page.png, docs/loading-state.png, docs/search-results.png from the nabd-masr repo into public/projects/nabd-masr/, then list them here
+    images: [
+      "/projects/nabd-masr/landing-page.png",
+      "/projects/nabd-masr/search-results.png",
+      "/projects/nabd-masr/loading-state.png",
+    ] },
 
   { id: "around-the-world", status: "done", kind: "frontend", featured: true, orbit: 2, angle: 150,
     stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Router"],
@@ -39,12 +43,12 @@ export const projects: Project[] = [
   { id: "kanban", status: "done", kind: "frontend", featured: false, orbit: 3, angle: 90,
     stack: ["React", "Redux Toolkit", "Tailwind CSS"],
     links: { live: "https://flowban-app.netlify.app/", repo: "TODO" },
-    images: [] },
+    images: ["/projects/kanban/board.png", "/projects/kanban/task-details.png"] },
 
   { id: "caltrack", status: "done", kind: "frontend", featured: false, orbit: 3, angle: 210,
     stack: ["React", "TypeScript", "React Router", "CSS Modules"],
     links: { live: "https://clatrack.netlify.app/", repo: "TODO" },
-    images: [] },
+    images: ["/projects/caltrack/tracker.png", "/projects/caltrack/form-validation.png"] },
 
   { id: "portfolio", status: "done", kind: "fullstack", featured: false, orbit: 3, angle: 355,
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "next-intl", "Resend"],

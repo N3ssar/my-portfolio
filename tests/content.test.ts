@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { projects } from "@/content/projects";
 import { skills } from "@/content/skills";
@@ -148,6 +150,14 @@ describe("content", () => {
         if (a === b) continue;
         const distance = Math.hypot(a.point.x - b.point.x, a.point.y - b.point.y);
         expect(distance, `${a.id} to ${b.id}`).toBeGreaterThanOrEqual(46);
+      }
+    }
+  });
+
+  it("only lists screenshots that exist in public/", () => {
+    for (const { id, images } of projects) {
+      for (const image of images) {
+        expect(existsSync(join(process.cwd(), "public", image)), `${id}: ${image}`).toBe(true);
       }
     }
   });

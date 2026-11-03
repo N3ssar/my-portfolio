@@ -22,7 +22,11 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Brand assets
 
-`app/apple-icon.png` and `public/og.png` are generated. To regenerate them after changing the brand mark or the text on the image, run `pnpm build`, then `pnpm generate:brand`. It needs Edge or Chrome; set `BROWSER_PATH` if yours isn't found.
+`app/favicon.ico`, `app/apple-icon.png` and `public/og.png` are generated. To regenerate them after changing the brand mark or the text on the image, run `pnpm build`, then `pnpm generate:brand`. It needs Edge or Chrome; set `BROWSER_PATH` if yours isn't found.
+
+## Project screenshots
+
+The Kanban and CalTrack screenshots in `public/projects/` come from their live demos. To capture them again at 1280×800, run `pnpm capture:demos` (or `pnpm capture:demos kanban` for one project). It drives Edge or Chrome headlessly and needs network access; set `BROWSER_PATH` if your browser isn't found. The Nabd Masr screenshots come from its own repo.
 
 ## Learn More
 

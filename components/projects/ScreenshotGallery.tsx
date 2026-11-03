@@ -41,7 +41,7 @@ export function ScreenshotGallery({
               alt=""
               fill
               sizes="(min-width: 1024px) 130px, 33vw"
-              className="object-cover grayscale transition duration-300 ease-out group-hover:grayscale-0 group-data-[selected=true]:grayscale-0"
+              className="object-cover object-top grayscale transition duration-300 ease-out group-hover:grayscale-0 group-data-[selected=true]:grayscale-0"
             />
           </button>
         ))}

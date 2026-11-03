@@ -1,4 +1,4 @@
-// Renders app/apple-icon.png and public/og.png with a headless Chromium browser.
+// Renders app/favicon.ico, app/apple-icon.png and public/og.png with a headless Chromium browser.
 // Inter comes from the Next.js build output, so run `pnpm build` first.
 // Set BROWSER_PATH if Edge or Chrome is not found.
 import { spawnSync } from "node:child_process";
@@ -41,6 +41,10 @@ const COLORS = {
 const mark = (size, background = "") =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="${size}" height="${size}" style="display:block;flex:none">${background}<path d="M11 7H7V25H11M21 7H25V25H21M7.41 7.41L24.59 24.59" fill="none" stroke="${COLORS.accent}" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"/></svg>`;
 
+// The favicon uses app/icon.svg itself, which has the thicker small-size stroke.
+const favicon = (size) =>
+  `<!doctype html><body style="margin:0;background:transparent"><img src="icon.svg" width="${size}" height="${size}" style="display:block"></body>`;
+
 const appleIcon = `<!doctype html><body style="margin:0;background:${COLORS.surface}">${mark(180)}</body>`;
 
 const ogImage = `<!doctype html><meta charset="utf-8"><style>
@@ -64,6 +68,26 @@ function findInter() {
 
 const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 
+// An ICO file can hold PNG images directly: a 6-byte header, a 16-byte entry per image, then the PNGs.
+function packIco(pngs) {
+  const header = Buffer.alloc(6 + 16 * pngs.length);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(pngs.length, 4);
+  let offset = header.length;
+  pngs.forEach(({ size, data }, index) => {
+    const entry = 6 + 16 * index;
+    header.writeUInt8(size, entry);
+    header.writeUInt8(size, entry + 1);
+    header.writeUInt16LE(1, entry + 4);
+    header.writeUInt16LE(32, entry + 6);
+    header.writeUInt32LE(data.length, entry + 8);
+    header.writeUInt32LE(offset, entry + 12);
+    offset += data.length;
+  });
+  return Buffer.concat([header, ...pngs.map(({ data }) => data)]);
+}
+
 // On Windows the browser's launcher can exit before the screenshot is written.
 function waitForFile(path, timeoutMs = 20000) {
   for (let waited = 0; waited < timeoutMs; waited += 200) {
@@ -82,8 +106,9 @@ if (!browser) throw new Error("No browser found. Set BROWSER_PATH to Edge or Chr
 const workDir = mkdtempSync(join(tmpdir(), "brand-assets-"));
 try {
   copyFileSync(findInter(), join(workDir, "inter.woff2"));
+  copyFileSync(join(root, "app/icon.svg"), join(workDir, "icon.svg"));
 
-  function render(html, width, height, output) {
+  function render(html, width, height, { transparent = false } = {}) {
     const page = join(workDir, "page.html");
     const screenshot = join(workDir, "screenshot.png");
     writeFileSync(page, html);
@@ -93,6 +118,7 @@ try {
       "--disable-gpu",
       "--hide-scrollbars",
       "--force-device-scale-factor=1",
+      ...(transparent ? ["--default-background-color=00000000"] : []),
       `--user-data-dir=${join(workDir, "profile")}`,
       `--window-size=${width},${height}`,
       "--virtual-time-budget=3000",
@@ -100,14 +126,22 @@ try {
       pathToFileURL(page).href,
     ]);
     if (error || !waitForFile(screenshot)) {
-      throw new Error(`Could not render ${output}: ${error ?? stderr}`);
+      throw new Error(`Could not render a ${width}x${height} image: ${error ?? stderr}`);
     }
-    copyFileSync(screenshot, join(root, output));
+    return readFileSync(screenshot);
+  }
+
+  function write(output, data) {
+    writeFileSync(join(root, output), data);
     console.log(`Wrote ${output}`);
   }
 
-  render(appleIcon, 180, 180, "app/apple-icon.png");
-  render(ogImage, 1200, 630, "public/og.png");
+  write(
+    "app/favicon.ico",
+    packIco([16, 32].map((size) => ({ size, data: render(favicon(size), size, size, { transparent: true }) }))),
+  );
+  write("app/apple-icon.png", render(appleIcon, 180, 180));
+  write("public/og.png", render(ogImage, 1200, 630));
 } finally {
   // The browser may still hold its profile for a moment. The OS cleans up temp files anyway.
   try {

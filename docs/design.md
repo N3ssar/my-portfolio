@@ -57,6 +57,7 @@ app/
     not-found.tsx         # 404 (section 7.9); unmatched URLs may also need a catch-all route or global-not-found, test in step 8
   api/contact/route.ts    # POST handler (section 10)
   globals.css             # tokens via @theme
+  favicon.ico             # 16 and 32px brand mark, from `pnpm generate:brand`
   icon.svg                # favicon: brand mark (section 5)
   apple-icon.png          # 180x180 brand mark, full-bleed --surface because iOS rounds the corners
   sitemap.ts
@@ -87,7 +88,7 @@ e2e/                      # Playwright smoke tests
 public/
   Muhammad_Nassar_CV.pdf  # TODO owner provides
   photo.jpg               # optional, owner provides
-  projects/<id>/*.png     # optional project screenshots
+  projects/<id>/*.png     # project screenshots: Nabd Masr from its repo, demos via `pnpm capture:demos`
   og.png                  # 1200x630, generated from design tokens: brand mark, name, role, location
 README.md
 TODO.md
@@ -167,7 +168,7 @@ Dark only in v1. Set `color-scheme: dark`. Define as CSS variables in `app/globa
 - **Contrast:** at the brightest point of the glow, `--text-muted` still meets WCAG AA (about 4.6:1). Dots are smaller than a text stroke, so they don't change text contrast.
 
 ### Brand mark
-An "N" whose two stems are a left square bracket "[" and a right square bracket "]", joined by a diagonal from the top-left corner to the bottom-right corner. `--accent` strokes on a `--surface` rounded square, square line caps, miter joins. The stroke is thicker at 24px and below so it stays legible at 16px. Used as `app/icon.svg`, `app/apple-icon.png`, the header mark, the Explorer ID fallback when there is no photo, and the logo on `og.png`. Component: `components/BrandMark.tsx`. `pnpm generate:brand` regenerates the two PNGs (`scripts/generate-brand-assets.mjs`).
+An "N" whose two stems are a left square bracket "[" and a right square bracket "]", joined by a diagonal from the top-left corner to the bottom-right corner. `--accent` strokes on a `--surface` rounded square, square line caps, miter joins. The stroke is thicker at 24px and below so it stays legible at 16px. Used as `app/icon.svg`, `app/favicon.ico` (16 and 32px, for browsers that request it directly), `app/apple-icon.png`, the header mark, the Explorer ID fallback when there is no photo, and the logo on `og.png`. Component: `components/BrandMark.tsx`. `pnpm generate:brand` regenerates the favicon and the two PNGs (`scripts/generate-brand-assets.mjs`).
 
 ### Typography
 - Headings: Inter 500. Body: Inter 400. Arabic: IBM Plex Sans Arabic (same weights).
@@ -237,7 +238,7 @@ Heading `projects.title`, helper line `projects.hint`.
 - `summary` (one plain sentence).
 - If present: **Challenge** and **What I did**.
 - If present: `note` as a muted small line.
-- Screenshots if `images` is not empty: up to 3 thumbnails via `next/image` (AVIF/WebP, lazy, fixed aspect ratio 16:10, 8px radius). Grayscale by default; full color when the card's project is selected or on hover. Click opens the image full size in a simple accessible dialog (Esc closes, focus returns).
+- Screenshots if `images` is not empty: up to 3 thumbnails via `next/image` (AVIF/WebP, lazy, fixed aspect ratio 16:10, 8px radius, cropped from the top so tall full-page captures show their header). Grayscale by default; full color when the card's project is selected or on hover. Click opens the image full size in a simple accessible dialog (Esc closes, focus returns).
 - `done`: "What I built" bullets (`built`). `in-progress`: "What I'm building" bullets (`building`).
 - Stack chips (pills, `--bg` background, `--text-soft`).
 - Buttons: **Live demo** (primary) and **Code** (outlined), following section 4.4. For `in-progress` projects the Code button label is `common.follow`.
@@ -392,7 +393,11 @@ export const projects: Project[] = [
   { id: "nabd-masr", status: "done", kind: "frontend", featured: true, orbit: 1, angle: 40,
     stack: ["React", "TypeScript", "Material UI", "Vite"],
     links: { live: null, repo: "https://github.com/N3ssar/nabd-masr" },
-    images: [] }, // TODO owner: copy docs/landing-page.png, docs/loading-state.png, docs/search-results.png from the nabd-masr repo into public/projects/nabd-masr/, then list them here
+    images: [
+      "/projects/nabd-masr/landing-page.png",
+      "/projects/nabd-masr/search-results.png",
+      "/projects/nabd-masr/loading-state.png",
+    ] },
 
   { id: "around-the-world", status: "done", kind: "frontend", featured: true, orbit: 2, angle: 150,
     stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Router"],
@@ -412,12 +417,12 @@ export const projects: Project[] = [
   { id: "kanban", status: "done", kind: "frontend", featured: false, orbit: 3, angle: 90,
     stack: ["React", "Redux Toolkit", "Tailwind CSS"],
     links: { live: "https://flowban-app.netlify.app/", repo: "TODO" },
-    images: [] },
+    images: ["/projects/kanban/board.png", "/projects/kanban/task-details.png"] },
 
   { id: "caltrack", status: "done", kind: "frontend", featured: false, orbit: 3, angle: 210,
     stack: ["React", "TypeScript", "React Router", "CSS Modules"],
     links: { live: "https://clatrack.netlify.app/", repo: "TODO" },
-    images: [] },
+    images: ["/projects/caltrack/tracker.png", "/projects/caltrack/form-validation.png"] },
 
   { id: "portfolio", status: "done", kind: "fullstack", featured: false, orbit: 3, angle: 355,
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "next-intl", "Resend"],
@@ -1010,12 +1015,14 @@ The task is done only when every item is true.
 ## 18. Open items for the owner (put these in `TODO.md`)
 
 1. **Forsa:** add the database and auth library to `stack` once chosen. Add the live URL only when applying or the admin dashboard works.
-2. **Nabd Masr screenshots:** copy `docs/landing-page.png`, `docs/loading-state.png` and `docs/search-results.png` from the nabd-masr repo into `public/projects/nabd-masr/` and list them in `images`.
+2. ~~**Nabd Masr screenshots**~~ done: copied from the nabd-masr repo into `public/projects/nabd-masr/`.
+2a. **Around The World live demo is broken:** REST Countries now answers `/v3.1/...` with a 301 redirect to a static file, so the app shows "Failed to load countries." Fix the data source, then run `pnpm capture:demos` with an Around The World entry added.
+2b. **CalTrack deep links 404:** opening `/track` directly returns Netlify's 404 page. Add a `_redirects` file (`/* /index.html 200`) to the CalTrack repo.
 3. **Repo URLs:** Around The World, Kanban, CalTrack, and this portfolio.
 3a. **Wasla:** send the repo link once the first code is pushed, then switch it to `in-progress`.
 3b. **Fix the CV to match the site:** remove "Netlify Serverless Function proxy" and "Serverless Functions"; change "OpenNews API" to "NewsAPI"; present Next.js, Node.js, Express and MongoDB as currently learning instead of "specializing"; add "Networking Fundamentals" to coursework.
 3c. **Fix the nabd-masr README:** remove the dead Live Demo badge and the corsproxy line, and correct the LinkedIn link.
-4. **Screenshots** for the other projects (optional but strongly recommended).
+4. **Screenshots** for NoteNest, Forsa and this portfolio (optional). Kanban and CalTrack are captured from their live demos.
 5. **"Last updated"** in Right now (`rightNow.updated`, both languages).
 6. **University coursework group:** keep or delete each item (Python, C++, C#, SQL Server, OOP, DSA). Only keep what you can talk about in an interview.
 7. **HomeTech:** if you have the code or screenshots of your frontend part, it can become a planet.
