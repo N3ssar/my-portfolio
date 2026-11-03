@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { SectionTitle } from "../SectionTitle";
 import { projects } from "@/content/projects";
 import { visibleProjects } from "@/lib/status";
 import { ProjectCard } from "./ProjectCard";
@@ -13,7 +14,7 @@ export function Projects() {
 
   return (
     <section id="projects" data-reveal className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
-      <h2>{t("title")}</h2>
+      <SectionTitle>{t("title")}</SectionTitle>
       <p className="mt-3 text-text-soft">{t("hint")}</p>
       <ProjectsView
         planets={visible.map((project) => ({

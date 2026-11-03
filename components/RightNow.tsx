@@ -1,4 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
+import { SectionTitle } from "./SectionTitle";
 import type { CSSProperties } from "react";
 import { projects } from "@/content/projects";
 import { skills } from "@/content/skills";
@@ -26,8 +27,8 @@ export function RightNow() {
 
   return (
     <section id="right-now" data-reveal className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
-      <h2>{t("title")}</h2>
-      <div className="mt-8 rounded-xl bg-surface p-4 sm:p-6">
+      <SectionTitle>{t("title")}</SectionTitle>
+      <div className="card-lift mt-8 rounded-xl bg-surface p-4 sm:p-6">
         <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-[auto_minmax(0,1fr)]">
           {listRows.map((row, index) => (
             <div key={row.key} className="contents">

@@ -18,20 +18,27 @@ test.describe("with motion allowed", () => {
   test("a newly selected project card fades in, and the screenshot dialog scales in", async ({ page }) => {
     await page.goto("/en");
     const projects = page.locator("#projects");
+    // Let the section finish its entrance first (the endless planet drift aside).
+    await projects.scrollIntoViewIfNeeded();
+    await expect(projects).toHaveClass(/reveal-in/);
+    await projects.evaluate((el) =>
+      Promise.all(
+        el
+          .getAnimations({ subtree: true })
+          .filter((animation) => animation.effect?.getComputedTiming().endTime !== Infinity)
+          .map((animation) => animation.finished),
+      ),
+    );
     // Hovering the map pauses the planet drift, so the click lands on a still planet.
     await projects.locator("[dir=ltr]").hover();
     await projects.getByRole("button", { name: "CalTrack", exact: true }).click();
     const card = page.locator("#project-caltrack");
-    const cardAnimations = await card.evaluate((el) =>
-      el.getAnimations().map((animation) => (animation as CSSAnimation).animationName),
-    );
-    expect(cardAnimations).toContain("fade-in");
+    // Declared styles, not running animations: under load these short runs can end before they are read.
+    expect(await card.evaluate((el) => getComputedStyle(el).animationName)).toBe("fade-in");
 
     await card.getByRole("button", { name: "CalTrack: Screenshots 1" }).click();
     const dialog = card.locator("dialog");
-    const dialogTransitions = await dialog.evaluate((el) =>
-      el.getAnimations().map((animation) => (animation as CSSTransition).transitionProperty),
-    );
+    const dialogTransitions = await dialog.evaluate((el) => getComputedStyle(el).transitionProperty.split(", "));
     expect(dialogTransitions).toEqual(expect.arrayContaining(["opacity", "transform"]));
     await expect.poll(() => dialog.evaluate((el) => getComputedStyle(el).opacity)).toBe("1");
   });
@@ -45,6 +52,59 @@ test.describe("with motion allowed", () => {
     await expect(about).not.toHaveClass(/reveal-pending/);
     await expect.poll(() => about.evaluate((el) => getComputedStyle(el).opacity)).toBe("1");
   });
+});
+
+test.describe("map entrances", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  const animationName = (el: Element) => getComputedStyle(el).animationName;
+
+  test("the Projects map draws its rings, scales in the sun and pops in the planets", async ({ page }) => {
+    await page.goto("/en");
+    const projects = page.locator("#projects");
+    await projects.scrollIntoViewIfNeeded();
+    await expect(projects).toHaveClass(/reveal-in/);
+    expect(await projects.locator(".orbit-ring").first().evaluate(animationName)).toBe("draw");
+    expect(await projects.locator(".sun-enter").evaluate(animationName)).toBe("pop");
+    expect(await projects.locator(".planet-pop").first().evaluate(animationName)).toBe("pop");
+    expect(await projects.locator("h2 .mask-line > span").evaluate(animationName)).toBe("mask-up");
+  });
+
+  test("the Skills map draws its lines and fades in its stars", async ({ page }) => {
+    await page.goto("/en");
+    const skills = page.locator("#skills");
+    await skills.scrollIntoViewIfNeeded();
+    await expect(skills).toHaveClass(/reveal-in/);
+    expect(await skills.locator(".edge-line").first().evaluate(animationName)).toBe("draw");
+    expect(await skills.locator(".star-pop").first().evaluate(animationName)).toBe("fade-in");
+    expect(await skills.locator("li[data-stagger]").first().evaluate(animationName)).toBe("reveal");
+  });
+
+  test("Fast mode reveals its sections like the main page", async ({ page }) => {
+    await page.goto("/en/fast");
+    expect(await page.getByRole("heading", { level: 1 }).evaluate(animationName)).toBe("rise");
+    const sections = page.locator("[data-reveal]");
+    expect(await page.locator("[data-reveal].reveal-pending").count()).toBeGreaterThan(0);
+    for (const section of await sections.all()) await section.scrollIntoViewIfNeeded();
+    await expect(page.locator("[data-reveal].reveal-pending")).toHaveCount(0);
+  });
+});
+
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false, reducedMotion: "no-preference" });
+
+  for (const path of ["/en", "/en/fast"]) {
+    test(`every section and heading on ${path} is fully visible`, async ({ page }) => {
+      await page.goto(path);
+      expect(await page.locator(".reveal-pending").count()).toBe(0);
+      const hidden = await page.evaluate(() =>
+        [...document.querySelectorAll("[data-reveal], h2 .mask-line > span")].filter(
+          (el) => getComputedStyle(el).opacity !== "1",
+        ).length,
+      );
+      expect(hidden).toBe(0);
+    });
+  }
 });
 
 test.describe("with reduced motion", () => {

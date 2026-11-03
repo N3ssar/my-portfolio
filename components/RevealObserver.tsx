@@ -26,7 +26,10 @@ export function RevealObserver() {
     );
 
     for (const element of document.querySelectorAll("[data-reveal]:not(.reveal-in)")) {
-      if (element.getBoundingClientRect().top < window.innerHeight) {
+      // Where the section's content starts: when only its top padding is on screen,
+      // nothing visible is hidden, so it still waits to reveal.
+      const contentTop = element.getBoundingClientRect().top + parseFloat(getComputedStyle(element).paddingTop);
+      if (contentTop < window.innerHeight) {
         // Already reached: never leave it hidden.
         if (element.classList.contains("reveal-pending")) reveal(element);
         continue;

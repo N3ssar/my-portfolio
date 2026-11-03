@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { SectionTitle } from "../SectionTitle";
 import { projects } from "@/content/projects";
 import { skills } from "@/content/skills";
 import { constellationEdges, starRadius } from "@/lib/constellation";
@@ -15,7 +16,7 @@ export function Skills() {
 
   return (
     <section id="skills" data-reveal className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
-      <h2>{t("title")}</h2>
+      <SectionTitle>{t("title")}</SectionTitle>
       <p className="mt-3 text-text-soft">{t("hint")}</p>
       <SkillsView
         stars={stars.map((skill) => ({

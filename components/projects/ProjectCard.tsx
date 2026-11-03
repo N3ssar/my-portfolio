@@ -31,7 +31,7 @@ export function ProjectCard({ project, compact = false }: { project: Project; co
   const name = t(`${item}.name`);
 
   return (
-    <article className="rounded-xl border-s-[3px] border-s-accent bg-surface p-4 text-sm">
+    <article className="card-lift rounded-xl border-s-[3px] border-s-accent bg-surface p-4 text-sm">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="me-1 text-base">{name}</h3>
         <StatusPill>{t(`kinds.${kind}`)}</StatusPill>

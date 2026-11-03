@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { SectionTitle } from "./SectionTitle";
 import type { CSSProperties } from "react";
 
 type LogEntry = { label: string; text: string };
@@ -23,7 +24,7 @@ export function About() {
 
   return (
     <section id="about" data-reveal className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
-      <h2>{t("title")}</h2>
+      <SectionTitle>{t("title")}</SectionTitle>
 
       {/* Captain's log: plain paragraphs, no timeline graphic. */}
       <ol className="mt-8 max-w-[720px] space-y-6">

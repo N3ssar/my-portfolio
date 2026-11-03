@@ -38,7 +38,7 @@ export function Hero() {
             {t("ctaContact")}
           </a>
         </div>
-        <div className="enter" style={step(4)}>
+        <div className="enter-end" style={step(4)}>
           <ExplorerId />
         </div>
       </div>

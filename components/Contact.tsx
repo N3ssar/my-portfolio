@@ -1,4 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
+import { SectionTitle } from "./SectionTitle";
 import type { ReactNode } from "react";
 import { site } from "@/content/site";
 import { ContactForm } from "./ContactForm";
@@ -51,7 +52,7 @@ export function Contact() {
 
   return (
     <section id="contact" data-reveal className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
-      <h2>{t("title")}</h2>
+      <SectionTitle>{t("title")}</SectionTitle>
       <p className="mt-3 text-text-soft">{t("intro")}</p>
 
       {/* From 1024px: actions on the start side (about 40%), form on the end side (about 60%). */}

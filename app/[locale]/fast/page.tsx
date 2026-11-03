@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { ProjectCard } from "@/components/projects/ProjectCard";
+import { RevealObserver } from "@/components/RevealObserver";
+import { SectionTitle } from "@/components/SectionTitle";
 import { SkillGroups } from "@/components/skills/SkillGroups";
 import { TrackedLink } from "@/components/TrackedLink";
 import { projects } from "@/content/projects";
@@ -25,18 +27,24 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/fast">):
 
 const external = { target: "_blank", rel: "noopener noreferrer" } as const;
 const LINK = "underline underline-offset-4 hover:text-accent";
+const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
 // The site's card style, used for every Fast mode block.
 function Card({ title, id, children }: { title: string; id?: string; children: ReactNode }) {
   return (
-    <section id={id} className="card-hover break-inside-avoid scroll-mt-20 rounded-xl border border-border bg-surface p-4 hover:border-text-muted sm:p-6">
-      <h2>{title}</h2>
+    <section
+      id={id}
+      data-reveal
+      className="card-lift break-inside-avoid scroll-mt-20 rounded-xl border border-border bg-surface p-4 hover:border-text-muted sm:p-6"
+    >
+      <SectionTitle>{title}</SectionTitle>
       <div className="mt-4">{children}</div>
     </section>
   );
 }
 
-// Recruiter Fast Mode: the same facts as the main page, calmer. No maps, SVG visuals or motion.
+// Recruiter Fast Mode: the same facts as the main page, calmer. No maps or SVG visuals; the same
+// entrance and scroll reveals as the main page.
 export default function FastPage() {
   const t = useTranslations("fast");
   const hero = useTranslations("hero");
@@ -58,10 +66,14 @@ export default function FastPage() {
       <section className="hero-glow py-16 lg:py-24">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div>
-            <p className="text-sm text-text-muted">{t("title")}</p>
-            <h1 className="mt-2">{site.name}</h1>
-            <p className="mt-4 text-text-soft">{hero("id.roleValue")}</p>
-            <div className="mt-6 flex flex-col gap-3 xs:flex-row">
+            <p className="enter text-sm text-text-muted" style={step(0)}>
+              {t("title")}
+            </p>
+            <h1 className="enter-rise mt-2">{site.name}</h1>
+            <p className="enter mt-4 text-text-soft" style={step(1)}>
+              {hero("id.roleValue")}
+            </p>
+            <div className="enter mt-6 flex flex-col gap-3 xs:flex-row" style={step(2)}>
               <TrackedLink event="cv_download" href={site.cv} download className="btn btn-primary">
                 {hero("ctaCv")}
               </TrackedLink>
@@ -70,7 +82,10 @@ export default function FastPage() {
               </a>
             </div>
           </div>
-          <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 rounded-xl border border-border bg-surface p-4 text-sm sm:p-6">
+          <dl
+            style={step(3)}
+            className="enter-end card-lift grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 rounded-xl border border-border bg-surface p-4 text-sm sm:p-6"
+          >
             {facts.map(([label, value]) => (
               <div key={label} className="contents">
                 <dt className="text-xs leading-5 text-text-muted">{label}</dt>
@@ -83,11 +98,11 @@ export default function FastPage() {
 
       <div className="space-y-12 pb-16 lg:pb-24">
         {top.length > 0 && (
-          <section>
-            <h2>{t("topProjects")}</h2>
+          <section data-reveal>
+            <SectionTitle>{t("topProjects")}</SectionTitle>
             <ul className="mt-4 grid gap-6 lg:grid-cols-3">
-              {top.map((project) => (
-                <li key={project.id} className="break-inside-avoid">
+              {top.map((project, index) => (
+                <li key={project.id} data-stagger style={step(index)} className="break-inside-avoid">
                   <ProjectCard project={project} compact />
                 </li>
               ))}
@@ -156,6 +171,7 @@ export default function FastPage() {
           </Link>
         </p>
       </div>
+      <RevealObserver />
     </div>
   );
 }

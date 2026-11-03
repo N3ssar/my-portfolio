@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import type { Edge } from "@/lib/constellation";
 import { CONSTELLATION_CENTER, CONSTELLATION_VIEWBOX } from "@/lib/constellation";
 import { estimateLabelWidth, labelSide } from "@/lib/orbit";
 import { atPoint, labelStyle } from "../mapPlacement";
 
 const SELECTED_RING_GAP = 4;
+
+// The position in the constellation's entrance sequence.
+const order = (i: number) => ({ "--i": i }) as CSSProperties;
 const VIEW_BOX = `0 0 ${CONSTELLATION_VIEWBOX.width} ${CONSTELLATION_VIEWBOX.height}`;
 
 export type Star = {
@@ -36,13 +39,16 @@ export function Constellation({
     // Like the star system, the constellation is never mirrored in RTL.
     <div dir="ltr" className="relative aspect-340/260 w-full">
       <svg aria-hidden="true" viewBox={VIEW_BOX} className="absolute inset-0 size-full overflow-visible">
-        {edges.map(({ from, to }) => {
+        {edges.map(({ from, to }, index) => {
           const a = byId.get(from);
           const b = byId.get(to);
           if (!a || !b) return null;
           return (
             <line
               key={`${from}-${to}`}
+              className="edge-line"
+              style={order(index)}
+              pathLength={1}
               x1={a.x}
               y1={a.y}
               x2={b.x}
@@ -52,8 +58,9 @@ export function Constellation({
             />
           );
         })}
-        {stars.map((star) => (
+        {stars.map((star, index) => (
           <g key={star.id} transform={`translate(${star.x} ${star.y})`}>
+            <g className="star-pop" style={order(index)}>
             {selectedId === star.id && (
               <>
                 <circle r={star.radius + SELECTED_RING_GAP} fill="var(--accent)" opacity="0.18" />
@@ -73,18 +80,19 @@ export function Constellation({
               stroke={star.learning ? "var(--text)" : "none"}
               strokeWidth="1"
             />
+            </g>
           </g>
         ))}
       </svg>
 
-      {stars.map((star) => {
+      {stars.map((star, index) => {
         const side = labelSide(star, star.radius, estimateLabelWidth(star.label), CONSTELLATION_CENTER);
         return (
           <span
             key={star.id}
             aria-hidden="true"
-            style={labelStyle(star, star.radius, side, CONSTELLATION_VIEWBOX)}
-            className="pointer-events-none absolute text-[13px] leading-[18px] whitespace-nowrap text-text-soft"
+            style={{ ...labelStyle(star, star.radius, side, CONSTELLATION_VIEWBOX), ...order(index) }}
+            className="star-label pointer-events-none absolute text-[13px] leading-[18px] whitespace-nowrap text-text-soft"
           >
             {star.label}
           </span>

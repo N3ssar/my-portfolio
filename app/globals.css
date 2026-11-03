@@ -207,10 +207,19 @@ textarea {
 }
 
 /*
- * Motion layer. Rules: 150 to 400ms (the hero sequence about 800ms in total), ease-out,
- * 12px of movement at most, no bounce, each reveal runs once, only transform and opacity animate.
- * Colour and border transitions on hover are the one exception. Everything here is off with reduced motion.
+ * Motion layer: calm, premium, never flashy. Reveals rise 24px over 600 to 700ms with a 6px blur
+ * clearing, on cubic-bezier(0.16, 1, 0.3, 1); children stagger about 80ms; each reveal runs once.
+ * Only transform, opacity and filter animate (plus stroke-dashoffset for lines that draw in, and
+ * colour and border on hover). Everything here is off with prefers-reduced-motion.
  */
+:root {
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="rtl"] {
+  --slide-from-end: -24px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   /* Smooth hover states on links, buttons, inputs and cards. In the base layer, so a
      component's own transition utilities still win. */
@@ -218,49 +227,130 @@ textarea {
     a,
     button,
     input,
-    textarea,
-    .card-hover {
+    textarea {
       transition-property: color, background-color, border-color;
       transition-duration: 200ms;
       transition-timing-function: ease-out;
     }
   }
 
-  /* Hero entrance. The h1 only rises, so it is visible from the first paint (it is the LCP element). */
+  /* Hover: cards lift 3px and their border brightens; primary buttons lift 1px; arrows nudge 3px. */
+  @layer components {
+    .btn {
+      transition-property: color, background-color, border-color, translate;
+      transition-duration: 250ms;
+      transition-timing-function: var(--ease-premium);
+    }
+
+    .btn-primary:hover {
+      translate: 0 -1px;
+    }
+  }
+
+  .card-lift {
+    transition:
+      translate 350ms var(--ease-premium),
+      border-color 350ms var(--ease-premium);
+  }
+
+  .card-lift:hover {
+    translate: 0 -3px;
+    border-color: color-mix(in srgb, var(--text-muted) 70%, var(--border));
+  }
+
+  .nudge-up svg {
+    transition: translate 250ms var(--ease-premium);
+  }
+
+  .nudge-up:hover svg {
+    translate: 0 -3px;
+  }
+
+  /* Hero entrance. The h1 only rises and unblurs: it stays at full opacity (it is the LCP element). */
   .enter {
-    animation: fade-up 400ms ease-out both;
-    animation-delay: calc(var(--i, 0) * 90ms);
+    animation: reveal 650ms var(--ease-premium) both;
+    animation-delay: calc(var(--i, 0) * 80ms);
   }
 
   .enter-rise {
-    animation: rise 400ms ease-out both;
+    animation: rise 700ms var(--ease-premium) both;
+  }
+
+  .enter-end {
+    animation: slide-in-end 700ms var(--ease-premium) both;
+    animation-delay: calc(var(--i, 0) * 80ms);
   }
 
   /* Scroll reveals. Only set by JavaScript, and only on sections that start below the fold. */
   .reveal-pending {
     opacity: 0;
-    transform: translateY(12px);
   }
 
   .reveal-in {
-    animation: fade-up 400ms ease-out both;
+    animation: reveal 650ms var(--ease-premium) both;
   }
 
   .reveal-in [data-stagger] {
-    animation: fade-up 300ms ease-out both;
-    animation-delay: calc(150ms + var(--i, 0) * 70ms);
+    animation: reveal 650ms var(--ease-premium) both;
+    animation-delay: calc(120ms + var(--i, 0) * 80ms);
+  }
+
+  /* Section headings: the text slides up from behind a clip. */
+  .reveal-in .mask-line > span {
+    animation: mask-up 750ms var(--ease-premium) both;
+  }
+
+  /* Projects: orbit rings draw in, the sun scales in, planets pop in one by one. */
+  .reveal-in .orbit-ring {
+    stroke-dasharray: 1;
+    animation: draw 1100ms var(--ease-premium) both;
+    animation-delay: calc(var(--i, 0) * 120ms);
+  }
+
+  .reveal-in .sun-enter,
+  .reveal-in .planet-pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pop 650ms var(--ease-premium) both;
+  }
+
+  .reveal-in .sun-enter {
+    animation-delay: 150ms;
+  }
+
+  .reveal-in .planet-pop,
+  .reveal-in .planet-label {
+    animation-delay: calc(350ms + var(--i, 0) * 90ms);
+  }
+
+  .reveal-in .planet-label {
+    animation: fade-in 500ms var(--ease-premium) both;
+    animation-delay: calc(350ms + var(--i, 0) * 90ms);
+  }
+
+  /* Skills: constellation lines draw in, stars fade in one by one. */
+  .reveal-in .edge-line {
+    stroke-dasharray: 1;
+    animation: draw 900ms var(--ease-premium) both;
+    animation-delay: calc(var(--i, 0) * 35ms);
+  }
+
+  .reveal-in .star-pop,
+  .reveal-in .star-label {
+    animation: fade-in 500ms var(--ease-premium) both;
+    animation-delay: calc(250ms + var(--i, 0) * 60ms);
   }
 
   /* A card that becomes visible (a new selection) fades in. */
   .card-in:not([hidden]) {
-    animation: fade-in 200ms ease-out;
+    animation: fade-in 250ms ease-out;
   }
 
   /* Planets and stars grow slightly on hover and keyboard focus. */
   .map-node {
     transform-box: fill-box;
     transform-origin: center;
-    transition: transform 200ms ease-out;
+    transition: transform 250ms var(--ease-premium);
   }
 
   .planet-layer:has(> button:hover, > button:focus-visible) .map-node,
@@ -268,15 +358,20 @@ textarea {
     transform: scale(1.15);
   }
 
+  /* The Explorer ID scan line: one thin teal sweep while the launch countdown runs. */
+  .scan-line {
+    animation: scan 1100ms var(--ease-premium) both;
+  }
+
   /* The screenshot dialog fades and scales in from 0.98, and back out. */
   dialog.dialog-motion {
     opacity: 0;
     transform: scale(0.98);
     transition:
-      opacity 200ms ease-out,
-      transform 200ms ease-out,
-      overlay 200ms allow-discrete,
-      display 200ms allow-discrete;
+      opacity 250ms ease-out,
+      transform 250ms ease-out,
+      overlay 250ms allow-discrete,
+      display 250ms allow-discrete;
   }
 
   dialog.dialog-motion[open] {
@@ -316,7 +411,7 @@ textarea {
     background: currentColor;
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 250ms ease-out;
+    transition: transform 300ms var(--ease-premium);
   }
 
   [dir="rtl"] .link-grow::after {
@@ -329,22 +424,80 @@ textarea {
   }
 }
 
-@keyframes fade-up {
+/* The clip for masked headings. Harmless without motion: the text simply sits in place. */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.mask-line > span {
+  display: inline-block;
+}
+
+@keyframes reveal {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(24px);
+    filter: blur(6px);
   }
 }
 
 @keyframes rise {
   from {
-    transform: translateY(12px);
+    transform: translateY(24px);
+    filter: blur(4px);
+  }
+}
+
+@keyframes slide-in-end {
+  from {
+    opacity: 0;
+    transform: translateX(var(--slide-from-end, 24px));
+    filter: blur(6px);
+  }
+}
+
+@keyframes mask-up {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
   }
 }
 
 @keyframes fade-in {
   from {
     opacity: 0;
+  }
+}
+
+@keyframes scan {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  15%,
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
   }
 }
 
