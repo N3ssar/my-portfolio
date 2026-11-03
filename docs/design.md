@@ -71,7 +71,7 @@ components/
   projects/ProjectSelection.tsx   # shared selection, so Skills can point at a project
   skills/Skills.tsx  skills/SkillsView.tsx  skills/Constellation.tsx  skills/SkillCard.tsx  skills/SkillGroups.tsx
   mapPlacement.ts         # places HTML labels and buttons over both SVG maps
-  RightNow.tsx  About.tsx  Contact.tsx  Footer.tsx
+  RightNow.tsx  About.tsx  Contact.tsx  ContactForm.tsx  CopyButton.tsx  Footer.tsx
   FastModeButton.tsx  LangToggle.tsx  StatusPill.tsx
   terminal/*              # Phase 2 only
 content/
@@ -85,6 +85,7 @@ lib/
   constellation.ts        # computes edges from usedIn
   orbit.ts                # computes planet x/y from orbit + angle
   github.ts  contact.ts  ratelimit.ts
+  contact-delivery.ts     # Resend and Telegram; imported only by the API route
 tests/                    # Vitest unit tests
 e2e/                      # Playwright smoke tests
 public/
@@ -317,12 +318,14 @@ Rules: print-friendly (`@media print`: white background, black text, no buttons)
 { name: string; contact: string; message: string; website?: string; locale: "en" | "ar" }
 ```
 
-Validation (zod schema in `lib/contact.ts`, shared with the client form): `name` 2 to 80 chars; `contact` 5 to 120 chars (email or phone, no strict format; trim and strip control characters); `message` 10 to 1000 chars; `website` must be empty.
+Validation (zod schema in `lib/contact.ts`, shared with the client form): `name` 2 to 80 chars; `contact` 5 to 120 chars (email or phone, no strict format); all fields are trimmed and stripped of control characters before the length check (`message` keeps line breaks and tabs); `message` 10 to 1000 chars; `website` must be empty.
 
 Anti-spam:
 1. **Honeypot:** if `website` is non-empty, return `200 { ok: true }` and do nothing.
-2. **Rate limit:** 3 requests per 10 minutes per IP via `@upstash/ratelimit`. **Required in production.** In local development only, if the Upstash env vars are missing, fall back to an in-memory limiter and log a warning (it does not work across serverless instances, so it is never the production solution). On limit: `429`.
+2. **Rate limit:** 3 requests per 10 minutes per IP via `@upstash/ratelimit`. **Required in production:** if the Upstash env vars are missing when `NODE_ENV` is `production` (including a local `next start`), the route logs an error and returns `503` without sending anything. In local development only, if the Upstash env vars are missing, fall back to an in-memory limiter and log a warning (it does not work across serverless instances, so it is never the production solution). On limit: `429`.
 3. Reject bodies over 5 KB with `413`.
+
+Order of checks: body size (`413`), JSON parse (`400`), honeypot (`200`, nothing sent), rate limit (`429`, or `503` when unavailable), schema (`400`), then delivery.
 
 Delivery (both channels in parallel with `Promise.allSettled`):
 - **Email via Resend** to `CONTACT_TO_EMAIL`, from `Portfolio <onboarding@resend.dev>` until a domain is verified. Note: the `onboarding@resend.dev` sender only delivers to the email address that owns the Resend account, so `CONTACT_TO_EMAIL` must be that address until a custom domain is verified. Subject `New message from {name}`, plain text body (name, contact, message, locale, ISO timestamp). No HTML.
