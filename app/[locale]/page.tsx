@@ -1,4 +1,6 @@
+import { About } from "@/components/About";
 import { Hero } from "@/components/Hero";
+import { RightNow } from "@/components/RightNow";
 import { Projects } from "@/components/projects/Projects";
 import { ProjectSelectionProvider } from "@/components/projects/ProjectSelection";
 import { Skills } from "@/components/skills/Skills";
@@ -15,6 +17,8 @@ export default function HomePage() {
         <Projects />
         <Skills />
       </ProjectSelectionProvider>
+      <RightNow />
+      <About />
     </>
   );
 }
