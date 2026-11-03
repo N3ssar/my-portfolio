@@ -7,7 +7,7 @@ export function Hero() {
   const t = useTranslations("hero");
 
   return (
-    <section className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
+    <section className="hero-glow mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
       <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div>
           <StatusPill dot>{t("availability")}</StatusPill>

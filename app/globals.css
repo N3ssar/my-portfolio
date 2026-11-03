@@ -34,8 +34,21 @@
 }
 
 @layer base {
+  /* A static starfield: tiny dots, mostly --text and one rare --accent. Pure CSS, no animation. */
   body {
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(circle at 37px 59px, color-mix(in srgb, var(--text) 45%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 151px 173px, color-mix(in srgb, var(--text) 30%, transparent) 0.75px, transparent 1.25px),
+      radial-gradient(circle at 88px 21px, color-mix(in srgb, var(--text) 60%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 240px 190px, color-mix(in srgb, var(--text) 25%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 17px 301px, color-mix(in srgb, var(--text) 40%, transparent) 0.75px, transparent 1.25px),
+      radial-gradient(circle at 311px 97px, color-mix(in srgb, var(--text) 55%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 199px 402px, color-mix(in srgb, var(--text) 35%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 403px 233px, color-mix(in srgb, var(--text) 50%, transparent) 0.75px, transparent 1.25px),
+      radial-gradient(circle at 122px 488px, color-mix(in srgb, var(--text) 30%, transparent) 0.5px, transparent 1px),
+      radial-gradient(circle at 291px 147px, color-mix(in srgb, var(--accent) 60%, transparent) 0.75px, transparent 1.25px);
+    background-size: 211px 211px, 211px 211px, 293px 293px, 293px 293px, 379px 379px, 379px 379px, 467px 467px, 467px 467px, 541px 541px, 613px 613px;
     color: var(--text);
     font-family: var(--font-sans);
     font-size: 1rem;
@@ -119,6 +132,26 @@
 
   .btn-outline:hover {
     color: var(--accent);
+  }
+
+  /* One faint accent glow at the top of the hero. It fades out before the section's edges. */
+  .hero-glow {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .hero-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: -1;
+    height: min(560px, 100%);
+    background: radial-gradient(
+      ellipse 50% 70% at 50% 0%,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent
+    );
+    pointer-events: none;
   }
 
   .sun-intro {
