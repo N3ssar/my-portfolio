@@ -3,6 +3,7 @@ import { IBM_Plex_Sans_Arabic, Inter, JetBrains_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
@@ -67,7 +68,10 @@ export default async function LocaleLayout({
         {/* Client components get translated labels as props, so no messages reach the browser. */}
         <NextIntlClientProvider messages={null}>
           <Header />
-          <main id="main">{children}</main>
+          <main id="main" tabIndex={-1} className="outline-none">
+            {children}
+          </main>
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>

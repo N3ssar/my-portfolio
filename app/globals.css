@@ -166,3 +166,31 @@
     transform: scale(0.6);
   }
 }
+
+/* Fast mode prints as a plain one-pager: white page, black text, no buttons or site chrome. */
+@media print {
+  /* color-scheme: dark would otherwise paint the page dark behind transparent elements. */
+  :root {
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000;
+  }
+
+  * {
+    color: #000 !important;
+    background: transparent !important;
+    border-color: #ccc !important;
+  }
+
+  header,
+  footer,
+  .btn,
+  button,
+  a[href="#main"] {
+    display: none !important;
+  }
+}

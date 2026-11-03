@@ -11,6 +11,7 @@ const ANCHORS = ["projects", "skills", "about", "contact"] as const;
 export function Header() {
   const nav = useTranslations("nav");
   const common = useTranslations("common");
+  const fast = useTranslations("fast");
 
   return (
     <HeaderShell
@@ -27,7 +28,7 @@ export function Header() {
       }
       actions={
         <>
-          <FastModeButton label={nav("fast")} />
+          <FastModeButton label={nav("fast")} backLabel={fast("back")} />
           <LangToggle label={nav("lang")} />
         </>
       }

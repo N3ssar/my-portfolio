@@ -8,6 +8,8 @@ export const site = {
     figma: "https://www.figma.com/@nassar1",
     x: "https://x.com/MuhmdANassar",
   },
+  // Brand names for the footer links. Not translated.
+  linkLabels: { github: "GitHub", linkedin: "LinkedIn", figma: "Figma", x: "X" },
   cv: "/Muhammad_Nassar_CV.pdf",
   github_user: "N3ssar",
 } as const;

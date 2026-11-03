@@ -1,9 +1,14 @@
-import { Link } from "@/i18n/navigation";
+"use client";
 
-export function FastModeButton({ label }: { label: string }) {
+import { Link, usePathname } from "@/i18n/navigation";
+
+// Opens Fast mode, or leads back to the full site when already in it.
+export function FastModeButton({ label, backLabel }: { label: string; backLabel: string }) {
+  const onFastMode = usePathname() === "/fast";
+
   return (
-    <Link href="/fast" className="btn btn-outline btn-sm">
-      {label}
+    <Link href={onFastMode ? "/" : "/fast"} className="btn btn-outline btn-sm">
+      {onFastMode ? backLabel : label}
     </Link>
   );
 }

@@ -54,7 +54,8 @@ app/
     layout.tsx            # html lang/dir, fonts, Header, Footer, providers, Analytics
     page.tsx              # all sections in order (section 7)
     fast/page.tsx         # Recruiter Fast Mode (section 8)
-    not-found.tsx         # 404 (section 7.9); unmatched URLs may also need a catch-all route or global-not-found, test in step 8
+    not-found.tsx         # 404 (section 7.9)
+    [...rest]/page.tsx    # calls notFound(), so any unknown path under a locale gets the localized 404
   api/contact/route.ts    # POST handler (section 10)
   globals.css             # tokens via @theme
   favicon.ico             # 16 and 32px brand mark, from `pnpm generate:brand`
@@ -279,13 +280,13 @@ There is no Quick answers block: availability, location and military status are 
 
 ### 7.8 Footer
 - Start: `footer.built` and `© {year} Muhammad Nassar`.
-- Center: social links (GitHub, LinkedIn, Figma, X).
-- End: **Last activity on GitHub:** `footer.lastCommit` + relative time (e.g. "2 hours ago"), formatted with `Intl.RelativeTimeFormat` in the current locale. Data from `lib/github.ts` (public events or latest repo `pushed_at` for `site.github_user`, server-side fetch in a `use cache` function with a one-hour `cacheLife`, optional `GITHUB_TOKEN`). If the request fails, hide the line silently, and do not cache the failure for the hour. The year and the relative time are computed outside the prerendered shell (section 2).
+- Center: social links (GitHub, LinkedIn, Figma, X), labelled with `site.linkLabels`.
+- End: **Last activity on GitHub:** `footer.lastCommit` + relative time (e.g. "2 hours ago"), formatted with `Intl.RelativeTimeFormat` in the current locale. Data from `lib/github.ts` (the newest `pushed_at` of `site.github_user`'s public repos, server-side fetch in a `use cache` function with a one-hour `cacheLife`, optional `GITHUB_TOKEN`). If the request fails, hide the line silently, and do not cache the failure for the hour. The year and the relative time are computed outside the prerendered shell (section 2).
 - `common.backToTop` button (scrolls to top).
 - Phase 2 only: `footer.hint` on desktop fine-pointer devices.
 
 ### 7.9 404 page
-Simple centered panel: `notFound.title`, `notFound.text`, and a primary button `notFound.back` to `/{locale}`. A single small static planet drawing is allowed.
+Simple centered panel: `notFound.title`, `notFound.text`, and a primary button `notFound.back` to `/{locale}`. A single small static planet drawing is allowed. Unknown paths return a real `404` with `noindex`; paths without a locale are first redirected to one. A path with a file extension (for example `/missing.txt`) skips the proxy and gets Next.js's default 404, because there is no root layout to render the localized page.
 
 ## 8. Recruiter Fast Mode
 
@@ -303,7 +304,7 @@ Content, top to bottom:
 7. **Contact block:** Email, LinkedIn, WhatsApp, GitHub.
 8. Link `fast.full`.
 
-Rules: print-friendly (`@media print`: white background, black text, no buttons). `fast.back` link in the header. Same content files, no separate copy.
+Rules: print-friendly (`@media print`: white background, black text, no buttons, no header or footer). On this page the header's Fast mode button becomes the `fast.back` link. The starfield is covered by a plain `--bg` layer. Same content files, no separate copy.
 
 ## 9. States and responsive behavior
 
@@ -373,6 +374,8 @@ export const site = {
     figma: "https://www.figma.com/@nassar1",
     x: "https://x.com/MuhmdANassar",
   },
+  // Brand names for the footer links. Not translated.
+  linkLabels: { github: "GitHub", linkedin: "LinkedIn", figma: "Figma", x: "X" },
   cv: "/Muhammad_Nassar_CV.pdf",
   github_user: "N3ssar",
 } as const;
