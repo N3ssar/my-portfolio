@@ -15,6 +15,48 @@ test.describe("with motion allowed", () => {
     expect(await h1.evaluate((el) => getComputedStyle(el).opacity)).toBe("1");
   });
 
+  test("the hero runs one CSS sequence with no blur, and the countdown waits for the card", async ({ page }) => {
+    // Notes when the countdown first shows, measured on the page clock.
+    await page.addInitScript(() => {
+      new MutationObserver((_, observer) => {
+        if (document.querySelector("main section .text-accent")?.textContent === "T-3") {
+          (window as unknown as { countdownAt: number }).countdownAt = performance.now();
+          observer.disconnect();
+        }
+      }).observe(document, { subtree: true, childList: true, characterData: true });
+    });
+    await page.goto("/en");
+    const hero = page.locator("main section").first();
+    const sequence = await hero.evaluate((el) =>
+      el.getAnimations({ subtree: true }).map((animation) => {
+        const effect = animation.effect as KeyframeEffect;
+        return {
+          name: (animation as CSSAnimation).animationName,
+          delay: effect.getTiming().delay,
+          properties: [...new Set(effect.getKeyframes().flatMap((frame) => Object.keys(frame)))],
+        };
+      }),
+    );
+    expect(sequence.map(({ name, delay }) => `${name}@${delay}`)).toEqual([
+      "hero-rise@0",
+      "hero-rise@0",
+      "hero-fade-up@120",
+      "hero-fade-up@220",
+      "hero-fade-up@220",
+      "hero-from-end@320",
+    ]);
+    expect(sequence.flatMap(({ properties }) => properties)).not.toContain("filter");
+
+    const cardEnd = await page.locator(".hero-card").evaluate((el) => {
+      const animation = el.getAnimations()[0];
+      const timing = animation.effect!.getComputedTiming();
+      return Number(animation.startTime) + Number(timing.endTime);
+    });
+    await expect.poll(() => page.evaluate(() => (window as unknown as { countdownAt?: number }).countdownAt)).toBeDefined();
+    const countdownAt = await page.evaluate(() => (window as unknown as { countdownAt: number }).countdownAt);
+    expect(countdownAt).toBeGreaterThanOrEqual(cardEnd - 20);
+  });
+
   test("a newly selected project card fades in, and the screenshot dialog scales in", async ({ page }) => {
     await page.goto("/en");
     const projects = page.locator("#projects");
@@ -82,7 +124,7 @@ test.describe("map entrances", () => {
 
   test("Fast mode reveals its sections like the main page", async ({ page }) => {
     await page.goto("/en/fast");
-    expect(await page.getByRole("heading", { level: 1 }).evaluate(animationName)).toBe("rise");
+    expect(await page.getByRole("heading", { level: 1 }).evaluate(animationName)).toBe("hero-rise");
     const sections = page.locator("[data-reveal]");
     expect(await page.locator("[data-reveal].reveal-pending").count()).toBeGreaterThan(0);
     for (const section of await sections.all()) await section.scrollIntoViewIfNeeded();
@@ -92,6 +134,14 @@ test.describe("map entrances", () => {
 
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false, reducedMotion: "no-preference" });
+
+  test("the hero entrance still runs: it is CSS, not JavaScript", async ({ page }) => {
+    await page.goto("/en");
+    expect(await page.getByRole("heading", { level: 1 }).evaluate((el) => getComputedStyle(el).animationName)).toBe(
+      "hero-rise",
+    );
+    await expect.poll(() => page.locator(".hero-card").evaluate((el) => getComputedStyle(el).opacity)).toBe("1");
+  });
 
   for (const path of ["/en", "/en/fast"]) {
     test(`every section and heading on ${path} is fully visible`, async ({ page }) => {

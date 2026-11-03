@@ -16,14 +16,17 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// Only used on Arabic pages and tiny labels, so neither is preloaded on every page.
+// Preloaded (Arabic subset only) and "optional", so it never swaps in after first paint: a
+// late swap re-wraps the Arabic text and resizes the header buttons (a layout shift). If it
+// misses first paint, that one page view keeps the fallback; the next one has it cached.
 const plexArabic = IBM_Plex_Sans_Arabic({
   variable: "--font-plex-arabic",
   subsets: ["arabic"],
   weight: ["400", "500"],
-  preload: false,
+  display: "optional",
 });
 
+// Tiny labels only, so not preloaded.
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],

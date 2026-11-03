@@ -217,7 +217,7 @@ textarea {
 }
 
 [dir="rtl"] {
-  --slide-from-end: -24px;
+  --hero-from-end: -16px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -266,19 +266,28 @@ textarea {
     translate: 0 -3px;
   }
 
-  /* Hero entrance. The h1 only rises and unblurs: it stays at full opacity (it is the LCP element). */
-  .enter {
-    animation: reveal 650ms var(--ease-premium) both;
-    animation-delay: calc(var(--i, 0) * 80ms);
+  /* Hero entrance: one calm sequence, pure CSS from the first paint, no blur. The h1 only
+     rises and stays at full opacity (it is the LCP element). The countdown waits for the
+     card to settle. */
+  .hero-rise {
+    animation: hero-rise 700ms var(--ease-premium) both;
   }
 
-  .enter-rise {
-    animation: rise 700ms var(--ease-premium) both;
+  .hero-1,
+  .hero-2 {
+    animation: hero-fade-up 700ms var(--ease-premium) both;
   }
 
-  .enter-end {
-    animation: slide-in-end 700ms var(--ease-premium) both;
-    animation-delay: calc(var(--i, 0) * 80ms);
+  .hero-1 {
+    animation-delay: 120ms;
+  }
+
+  .hero-2 {
+    animation-delay: 220ms;
+  }
+
+  .hero-card {
+    animation: hero-from-end 700ms var(--ease-premium) 320ms both;
   }
 
   /* Scroll reveals. Only set by JavaScript, and only on sections that start below the fold. */
@@ -356,11 +365,6 @@ textarea {
   .planet-layer:has(> button:hover, > button:focus-visible) .map-node,
   .map-node[data-active="true"] {
     transform: scale(1.15);
-  }
-
-  /* The Explorer ID scan line: one thin teal sweep while the launch countdown runs. */
-  .scan-line {
-    animation: scan 1100ms var(--ease-premium) both;
   }
 
   /* The screenshot dialog fades and scales in from 0.98, and back out. */
@@ -444,18 +448,23 @@ textarea {
   }
 }
 
-@keyframes rise {
+@keyframes hero-rise {
   from {
-    transform: translateY(24px);
-    filter: blur(4px);
+    transform: translateY(16px);
   }
 }
 
-@keyframes slide-in-end {
+@keyframes hero-fade-up {
   from {
     opacity: 0;
-    transform: translateX(var(--slide-from-end, 24px));
-    filter: blur(6px);
+    transform: translateY(16px);
+  }
+}
+
+@keyframes hero-from-end {
+  from {
+    opacity: 0;
+    transform: translateX(var(--hero-from-end, 16px));
   }
 }
 
@@ -481,23 +490,6 @@ textarea {
 @keyframes fade-in {
   from {
     opacity: 0;
-  }
-}
-
-@keyframes scan {
-  0% {
-    opacity: 0;
-    transform: translateY(0);
-  }
-
-  15%,
-  85% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(100%);
   }
 }
 

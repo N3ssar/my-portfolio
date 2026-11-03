@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { site } from "@/content/site";
 import { BrandMark } from "./BrandMark";
 import { ExplorerStatus } from "./ExplorerStatus";
-import { ScanLine } from "./ScanLine";
 
 const hasPhoto = existsSync(join(process.cwd(), "public", "photo.jpg"));
 
@@ -20,8 +19,7 @@ export function ExplorerId() {
   ];
 
   return (
-    <div className="card-lift relative overflow-hidden rounded-xl border border-border bg-surface p-4 sm:p-6">
-      <ScanLine />
+    <div className="card-lift rounded-xl border border-border bg-surface p-4 sm:p-6">
       <div className="flex items-center justify-between gap-4">
         <span dir="ltr" className="font-mono text-xs text-text-muted">
           {t("label")}

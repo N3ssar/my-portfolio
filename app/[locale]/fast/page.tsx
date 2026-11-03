@@ -66,14 +66,14 @@ export default function FastPage() {
       <section className="hero-glow py-16 lg:py-24">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div>
-            <p className="enter text-sm text-text-muted" style={step(0)}>
+            <p className="hero-rise text-sm text-text-muted">
               {t("title")}
             </p>
-            <h1 className="enter-rise mt-2">{site.name}</h1>
-            <p className="enter mt-4 text-text-soft" style={step(1)}>
+            <h1 className="hero-rise mt-2">{site.name}</h1>
+            <p className="hero-1 mt-4 text-text-soft">
               {hero("id.roleValue")}
             </p>
-            <div className="enter mt-6 flex flex-col gap-3 xs:flex-row" style={step(2)}>
+            <div className="hero-2 mt-6 flex flex-col gap-3 xs:flex-row">
               <TrackedLink event="cv_download" href={site.cv} download className="btn btn-primary">
                 {hero("ctaCv")}
               </TrackedLink>
@@ -83,8 +83,7 @@ export default function FastPage() {
             </div>
           </div>
           <dl
-            style={step(3)}
-            className="enter-end card-lift grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 rounded-xl border border-border bg-surface p-4 text-sm sm:p-6"
+            className="hero-card card-lift grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 rounded-xl border border-border bg-surface p-4 text-sm sm:p-6"
           >
             {facts.map(([label, value]) => (
               <div key={label} className="contents">
