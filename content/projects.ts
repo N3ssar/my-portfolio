@@ -27,7 +27,7 @@ export const projects: Project[] = [
 
   { id: "around-the-world", status: "done", kind: "frontend", featured: true, orbit: 2, angle: 150,
     stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Router"],
-    links: { live: "https://around-the-w0rld.vercel.app/", repo: "TODO" },
+    links: { live: null, repo: "TODO" }, // live hidden until the app is fixed: https://around-the-w0rld.vercel.app/
     images: [] },
 
   { id: "notenest", status: "done", kind: "backend", featured: true, orbit: 2, angle: 285,

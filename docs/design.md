@@ -405,7 +405,7 @@ export const projects: Project[] = [
 
   { id: "around-the-world", status: "done", kind: "frontend", featured: true, orbit: 2, angle: 150,
     stack: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Router"],
-    links: { live: "https://around-the-w0rld.vercel.app/", repo: "TODO" },
+    links: { live: null, repo: "TODO" }, // live hidden until the app is fixed: https://around-the-w0rld.vercel.app/
     images: [] },
 
   { id: "notenest", status: "done", kind: "backend", featured: true, orbit: 2, angle: 285,
@@ -1020,7 +1020,7 @@ The task is done only when every item is true.
 
 1. **Forsa:** add the database and auth library to `stack` once chosen. Add the live URL only when applying or the admin dashboard works.
 2. ~~**Nabd Masr screenshots**~~ done: copied from the nabd-masr repo into `public/projects/nabd-masr/`.
-2a. **Around The World live demo is broken:** REST Countries now answers `/v3.1/...` with a 301 redirect to a static file, so the app shows "Failed to load countries." Fix the data source, then run `pnpm capture:demos` with an Around The World entry added.
+2a. **Around The World live demo is broken:** REST Countries now answers `/v3.1/...` with a 301 redirect to a static file, so the app shows "Failed to load countries." Its Live demo button is hidden (`live: null`) until then. Fix the data source, restore the link, then run `pnpm capture:demos` with an Around The World entry added.
 2b. **CalTrack deep links 404:** opening `/track` directly returns Netlify's 404 page. Add a `_redirects` file (`/* /index.html 200`) to the CalTrack repo.
 3. **Repo URLs:** Around The World, Kanban, CalTrack, and this portfolio.
 3a. **Wasla:** send the repo link once the first code is pushed, then switch it to `in-progress`.

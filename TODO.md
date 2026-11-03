@@ -18,7 +18,7 @@ Open items from section 18 of `docs/design.md`.
 - [ ] **Wasla:** send the repo link once the first code is pushed, then switch it to `in-progress`.
 - [ ] **HomeTech:** if you have the code or screenshots of your frontend part, it can become a planet.
 - [ ] **Confirm the CalTrack URL spelling** (`clatrack.netlify.app`).
-- [ ] **Around The World live demo is broken:** REST Countries now answers `/v3.1/...` with a 301 redirect to a static file, so the app shows "Failed to load countries." Fix the data source (or hide the Live demo button with `live: null`), then add it to `scripts/capture-demo-screenshots.mjs` and run `pnpm capture:demos`.
+- [ ] **Around The World live demo is broken:** REST Countries now answers `/v3.1/...` with a 301 redirect to a static file, so the app shows "Failed to load countries." Its Live demo button is hidden for now (`live: null`, with the URL kept in a comment). Fix the data source, restore the link, then add it to `scripts/capture-demo-screenshots.mjs` and run `pnpm capture:demos`.
 - [ ] **CalTrack deep links 404:** opening `/track` directly returns Netlify's 404 page. Add a `public/_redirects` file with `/* /index.html 200` to the CalTrack repo.
 
 ## Fix outside this repo
