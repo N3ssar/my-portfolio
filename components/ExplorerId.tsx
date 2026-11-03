@@ -15,6 +15,7 @@ export function ExplorerId() {
     [t("mission"), t("missionValue")],
     [t("available"), t("availableValue")],
     [t("based"), t("basedValue")],
+    [t("military"), t("militaryValue")],
   ];
 
   return (

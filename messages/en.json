@@ -1,6 +1,25 @@
 {
-  "nav": { "projects": "Projects", "skills": "Skills", "about": "About", "contact": "Contact", "fast": "Fast mode", "lang": "العربية", "menu": "Menu" },
-  "common": { "live": "Live demo", "code": "Code", "follow": "Follow progress", "listView": "List view", "mapView": "Map view", "backToTop": "Back to launch pad", "copy": "Copy", "copied": "Copied", "close": "Close", "skipToContent": "Skip to content" },
+  "nav": {
+    "projects": "Projects",
+    "skills": "Skills",
+    "about": "About",
+    "contact": "Contact",
+    "fast": "Fast mode",
+    "lang": "العربية",
+    "menu": "Menu"
+  },
+  "common": {
+    "live": "Live demo",
+    "code": "Code",
+    "follow": "Follow progress",
+    "listView": "List view",
+    "mapView": "Map view",
+    "backToTop": "Back to launch pad",
+    "copy": "Copy",
+    "copied": "Copied",
+    "close": "Close",
+    "skipToContent": "Skip to content"
+  },
   "hero": {
     "availability": "Available for immediate start",
     "title": "Hi, I'm Muhammad. I build web apps people actually use.",
@@ -9,11 +28,24 @@
     "ctaCv": "Download CV",
     "ctaContact": "Contact me",
     "id": {
-      "label": "EXPLORER ID", "status": "ONLINE", "statusSr": "Status: online", "countdown": ["T-3", "T-2", "T-1"],
-      "role": "Role", "roleValue": "Frontend Developer",
-      "mission": "Mission", "missionValue": "Build clean, reliable web products",
-      "available": "Available", "availableValue": "Immediately",
-      "based": "Based in", "basedValue": "Cairo, Egypt"
+      "label": "EXPLORER ID",
+      "status": "ONLINE",
+      "statusSr": "Status: online",
+      "countdown": [
+        "T-3",
+        "T-2",
+        "T-1"
+      ],
+      "role": "Role",
+      "roleValue": "Frontend Developer",
+      "mission": "Mission",
+      "missionValue": "Build clean, reliable web products",
+      "available": "Available",
+      "availableValue": "Immediately",
+      "based": "Based in",
+      "basedValue": "Cairo, Egypt",
+      "military": "Military status",
+      "militaryValue": "Exempted"
     },
     "scroll": "Scroll to start the journey"
   },
@@ -21,9 +53,23 @@
     "title": "My universe of projects",
     "hint": "Each planet is a project. Tap one to see what it does.",
     "sun": "Me",
-    "kinds": { "fullstack": "Full-stack", "frontend": "Frontend", "backend": "Backend" },
-    "status": { "done": "Done", "in-progress": "In progress", "planned": "Planned" },
-    "labels": { "challenge": "Challenge", "did": "What I did", "built": "What I built", "building": "What I'm building", "screenshots": "Screenshots" },
+    "kinds": {
+      "fullstack": "Full-stack",
+      "frontend": "Frontend",
+      "backend": "Backend"
+    },
+    "status": {
+      "done": "Done",
+      "in-progress": "In progress",
+      "planned": "Planned"
+    },
+    "labels": {
+      "challenge": "Challenge",
+      "did": "What I did",
+      "built": "What I built",
+      "building": "What I'm building",
+      "screenshots": "Screenshots"
+    },
     "items": {
       "nabd-masr": {
         "name": "Nabd Masr",
@@ -120,7 +166,10 @@
     "building": "Building",
     "learning": "Learning",
     "next": "Next mission",
-    "looking": { "label": "Looking for", "value": "A junior Frontend or Full-Stack role" },
+    "looking": {
+      "label": "Looking for",
+      "value": "A junior Frontend or Full-Stack role"
+    },
     "updated": "TODO",
     "updatedLabel": "Last updated",
     "comingSoon": "Coming soon"
@@ -128,9 +177,18 @@
   "about": {
     "title": "About",
     "log": [
-      { "label": "LOG 01", "text": "I studied Information Systems at Port Said University (2021 to 2025). My graduation project was HomeTech, a platform for household services such as plumbing, electrical work, carpentry and maintenance. I worked on the frontend, in vanilla JavaScript." },
-      { "label": "LOG 02", "text": "I focused on modern frontend: JavaScript, React and React with TypeScript, including testing with Vitest. I built several React apps, three of them live. Now I'm learning the backend with Node.js, Express and MongoDB, and building full-stack apps with Next.js." },
-      { "label": "LOG 03", "text": "I worked as a sales representative at compuMe (12/2025 to 04/2026), explaining laptop specs in plain language. That experience shapes how I write interfaces and explain technical decisions. In 2026 I joined a UI/UX scholarship at Nile University to strengthen the Figma-to-code workflow." }
+      {
+        "label": "LOG 01",
+        "text": "I studied Information Systems at Port Said University (2021 to 2025). My graduation project was HomeTech, a platform for household services such as plumbing, electrical work, carpentry and maintenance. I worked on the frontend, in vanilla JavaScript."
+      },
+      {
+        "label": "LOG 02",
+        "text": "I focused on modern frontend: JavaScript, React and React with TypeScript, including testing with Vitest. I built several React apps, three of them live. Now I'm learning the backend with Node.js, Express and MongoDB, and building full-stack apps with Next.js."
+      },
+      {
+        "label": "LOG 03",
+        "text": "I worked as a sales representative at compuMe (12/2025 to 04/2026), explaining laptop specs in plain language. That experience shapes how I write interfaces and explain technical decisions. In 2026 I joined a UI/UX scholarship at Nile University to strengthen the Figma-to-code workflow."
+      }
     ],
     "crewTitle": "How I work",
     "crew": [
@@ -155,29 +213,33 @@
       "Programming Fundamentals Track (07/2024)"
     ],
     "languagesTitle": "Languages",
-    "languages": ["Arabic: native", "English: professional working proficiency"]
+    "languages": [
+      "Arabic: native",
+      "English: professional working proficiency"
+    ]
   },
   "contact": {
     "title": "Let's talk",
-    "intro": "Here are the quick answers, so you don't have to ask.",
-    "quick": [
-      { "label": "Availability", "value": "Immediate start" },
-      { "label": "Based in", "value": "Cairo, Egypt" },
-      { "label": "Languages", "value": "Arabic (native), English (professional)" },
-      { "label": "Military status", "value": "Exempted" }
-    ],
-    "actions": { "email": "Email", "linkedin": "LinkedIn", "whatsapp": "WhatsApp", "github": "GitHub", "open": "Open", "copyEmail": "Copy" },
+    "intro": "Have a role in mind or a question? Reach me whichever way is easiest for you.",
+    "actions": {
+      "email": "Email",
+      "linkedin": "LinkedIn",
+      "whatsapp": "WhatsApp",
+      "github": "GitHub",
+      "open": "Open",
+      "copyEmail": "Copy"
+    },
     "form": {
-      "title": "Or send a signal",
+      "title": "Or leave me a message",
       "name": "Your name",
       "contact": "Email or WhatsApp number (so I can reply)",
       "message": "Your message",
       "namePh": "Sara from Acme",
       "contactPh": "sara@acme.com",
       "messagePh": "We'd love to chat about a junior role",
-      "send": "Send signal",
+      "send": "Send message",
       "sending": "Sending...",
-      "success": "Signal received. I'll reply soon.",
+      "success": "Message received. I'll reply soon.",
       "errName": "Enter your name first",
       "errContact": "Add an email or number so I can reply",
       "errMessage": "Write a short message first (at least 10 characters)",
@@ -201,7 +263,18 @@
     "full": "See the full interactive portfolio",
     "back": "Back to full site"
   },
-  "footer": { "built": "Built with Next.js, TypeScript and Tailwind.", "lastCommit": "Last commit", "hint": "Press Ctrl/Cmd + K" },
-  "notFound": { "title": "Lost in space", "text": "This page doesn't exist.", "back": "Back to launch pad" },
-  "meta": { "title": "Muhammad Nassar | Frontend Developer", "description": "Frontend developer in Cairo. React and TypeScript, now building full-stack apps with Next.js and Node.js. Available for immediate start." }
+  "footer": {
+    "built": "Built with Next.js, TypeScript and Tailwind.",
+    "lastCommit": "Last commit",
+    "hint": "Press Ctrl/Cmd + K"
+  },
+  "notFound": {
+    "title": "Lost in space",
+    "text": "This page doesn't exist.",
+    "back": "Back to launch pad"
+  },
+  "meta": {
+    "title": "Muhammad Nassar | Frontend Developer",
+    "description": "Frontend developer in Cairo. React and TypeScript, now building full-stack apps with Next.js and Node.js. Available for immediate start."
+  }
 }

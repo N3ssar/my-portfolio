@@ -48,23 +48,11 @@ export function Contact() {
   const t = useTranslations("contact");
   const common = useTranslations("common");
   const locale = useLocale() === "ar" ? "ar" : "en";
-  const quick: { label: string; value: string }[] = t.raw("quick");
 
   return (
     <section id="contact" className="mx-auto max-w-page px-4 py-16 sm:px-6 lg:py-24">
       <h2>{t("title")}</h2>
       <p className="mt-3 text-text-soft">{t("intro")}</p>
-
-      <Column>
-        <dl className="grid grid-cols-2 gap-3">
-          {quick.map(({ label, value }) => (
-            <div key={label} className="rounded-lg bg-surface p-4">
-              <dt className="text-xs text-text-muted">{label}</dt>
-              <dd className="mt-1 text-sm">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </Column>
 
       <Column>
         <ul className="space-y-2">

@@ -216,7 +216,7 @@ Layout (mobile single column; desktop two columns with the Explorer ID on the en
 2. H1: `hero.title`.
 3. Subtext: `hero.subtitle` (soft color, max-width 560px).
 4. Two buttons: primary teal **See my projects** (scrolls to `#projects`), secondary outlined **Download CV** (`site.cv`). Under 400px, stack them vertically. Below them, a text link `hero.ctaContact` to `#contact`.
-5. **Explorer ID card** (`--surface`, 1px border, 12px radius): top row has `hero.id.label` (mono, muted) on the start side and a **status text** (mono, teal) on the end side. Below: the 52px brand mark (or `public/photo.jpg` in a 52px circle, if it exists) and a 2-column definition list: Role / Mission / Available / Based in.
+5. **Explorer ID card** (`--surface`, 1px border, 12px radius): top row has `hero.id.label` (mono, muted) on the start side and a **status text** (mono, teal) on the end side. Below: the 52px brand mark (or `public/photo.jpg` in a 52px circle, if it exists) and a 2-column definition list: Role / Mission / Available / Based in / Military status (`hero.id.military`, `hero.id.militaryValue`).
 6. Scroll hint: `hero.scroll` with a small down arrow.
 
 **Launch countdown (small, non-blocking):**
@@ -271,10 +271,11 @@ One compact card, rows computed as in section 4.3: **Building**, **Learning**, *
 ### 7.7 Contact
 Heading `contact.title`, intro `contact.intro`.
 
-1. **Quick answers** (2x2 grid of small `--surface` cards) from `contact.quick`.
-2. **One-tap actions** (rows with icon, label and a teal action word): **Email** (copy to clipboard with "Copied" feedback), **LinkedIn** (opens), **WhatsApp** (opens `site.whatsapp`), **GitHub** (opens). Do not print the raw phone number as visible text.
-3. **Message form** (`contact.form`): fields Name, "Email or WhatsApp number", Message (3 rows). Use a real `<form onSubmit>` with `preventDefault`, labels linked to inputs, inline validation messages under each field, and a status line with `aria-live="polite"`. Never `alert()`. States: idle, sending (button disabled, `form.sending`), success (`form.success`), error (`form.errSend` + the email + a copy button; on a `429` response, the error state shows `form.errRate` instead).
-4. Honeypot hidden field named `website` (section 10).
+1. **One-tap actions** (rows with icon, label and a teal action word): **Email** (copy to clipboard with "Copied" feedback), **LinkedIn** (opens), **WhatsApp** (opens `site.whatsapp`), **GitHub** (opens). Do not print the raw phone number as visible text.
+2. **Message form** (`contact.form`): fields Name, "Email or WhatsApp number", Message (3 rows). Use a real `<form onSubmit>` with `preventDefault`, labels linked to inputs, inline validation messages under each field, and a status line with `aria-live="polite"`. Never `alert()`. States: idle, sending (button disabled, `form.sending`), success (`form.success`), error (`form.errSend` + the email + a copy button; on a `429` response, the error state shows `form.errRate` instead).
+3. Honeypot hidden field named `website` (section 10).
+
+There is no Quick answers block: availability, location and military status are in the Explorer ID card, and languages are in About.
 
 ### 7.8 Footer
 - Start: `footer.built` and `© {year} Muhammad Nassar`.
@@ -522,8 +523,27 @@ Copy as is. Strings marked `TODO` are for the owner.
 
 ```json
 {
-  "nav": { "projects": "Projects", "skills": "Skills", "about": "About", "contact": "Contact", "fast": "Fast mode", "lang": "العربية", "menu": "Menu" },
-  "common": { "live": "Live demo", "code": "Code", "follow": "Follow progress", "listView": "List view", "mapView": "Map view", "backToTop": "Back to launch pad", "copy": "Copy", "copied": "Copied", "close": "Close", "skipToContent": "Skip to content" },
+  "nav": {
+    "projects": "Projects",
+    "skills": "Skills",
+    "about": "About",
+    "contact": "Contact",
+    "fast": "Fast mode",
+    "lang": "العربية",
+    "menu": "Menu"
+  },
+  "common": {
+    "live": "Live demo",
+    "code": "Code",
+    "follow": "Follow progress",
+    "listView": "List view",
+    "mapView": "Map view",
+    "backToTop": "Back to launch pad",
+    "copy": "Copy",
+    "copied": "Copied",
+    "close": "Close",
+    "skipToContent": "Skip to content"
+  },
   "hero": {
     "availability": "Available for immediate start",
     "title": "Hi, I'm Muhammad. I build web apps people actually use.",
@@ -532,11 +552,24 @@ Copy as is. Strings marked `TODO` are for the owner.
     "ctaCv": "Download CV",
     "ctaContact": "Contact me",
     "id": {
-      "label": "EXPLORER ID", "status": "ONLINE", "statusSr": "Status: online", "countdown": ["T-3", "T-2", "T-1"],
-      "role": "Role", "roleValue": "Frontend Developer",
-      "mission": "Mission", "missionValue": "Build clean, reliable web products",
-      "available": "Available", "availableValue": "Immediately",
-      "based": "Based in", "basedValue": "Cairo, Egypt"
+      "label": "EXPLORER ID",
+      "status": "ONLINE",
+      "statusSr": "Status: online",
+      "countdown": [
+        "T-3",
+        "T-2",
+        "T-1"
+      ],
+      "role": "Role",
+      "roleValue": "Frontend Developer",
+      "mission": "Mission",
+      "missionValue": "Build clean, reliable web products",
+      "available": "Available",
+      "availableValue": "Immediately",
+      "based": "Based in",
+      "basedValue": "Cairo, Egypt",
+      "military": "Military status",
+      "militaryValue": "Exempted"
     },
     "scroll": "Scroll to start the journey"
   },
@@ -544,9 +577,23 @@ Copy as is. Strings marked `TODO` are for the owner.
     "title": "My universe of projects",
     "hint": "Each planet is a project. Tap one to see what it does.",
     "sun": "Me",
-    "kinds": { "fullstack": "Full-stack", "frontend": "Frontend", "backend": "Backend" },
-    "status": { "done": "Done", "in-progress": "In progress", "planned": "Planned" },
-    "labels": { "challenge": "Challenge", "did": "What I did", "built": "What I built", "building": "What I'm building", "screenshots": "Screenshots" },
+    "kinds": {
+      "fullstack": "Full-stack",
+      "frontend": "Frontend",
+      "backend": "Backend"
+    },
+    "status": {
+      "done": "Done",
+      "in-progress": "In progress",
+      "planned": "Planned"
+    },
+    "labels": {
+      "challenge": "Challenge",
+      "did": "What I did",
+      "built": "What I built",
+      "building": "What I'm building",
+      "screenshots": "Screenshots"
+    },
     "items": {
       "nabd-masr": {
         "name": "Nabd Masr",
@@ -643,7 +690,10 @@ Copy as is. Strings marked `TODO` are for the owner.
     "building": "Building",
     "learning": "Learning",
     "next": "Next mission",
-    "looking": { "label": "Looking for", "value": "A junior Frontend or Full-Stack role" },
+    "looking": {
+      "label": "Looking for",
+      "value": "A junior Frontend or Full-Stack role"
+    },
     "updated": "TODO",
     "updatedLabel": "Last updated",
     "comingSoon": "Coming soon"
@@ -651,9 +701,18 @@ Copy as is. Strings marked `TODO` are for the owner.
   "about": {
     "title": "About",
     "log": [
-      { "label": "LOG 01", "text": "I studied Information Systems at Port Said University (2021 to 2025). My graduation project was HomeTech, a platform for household services such as plumbing, electrical work, carpentry and maintenance. I worked on the frontend, in vanilla JavaScript." },
-      { "label": "LOG 02", "text": "I focused on modern frontend: JavaScript, React and React with TypeScript, including testing with Vitest. I built several React apps, three of them live. Now I'm learning the backend with Node.js, Express and MongoDB, and building full-stack apps with Next.js." },
-      { "label": "LOG 03", "text": "I worked as a sales representative at compuMe (12/2025 to 04/2026), explaining laptop specs in plain language. That experience shapes how I write interfaces and explain technical decisions. In 2026 I joined a UI/UX scholarship at Nile University to strengthen the Figma-to-code workflow." }
+      {
+        "label": "LOG 01",
+        "text": "I studied Information Systems at Port Said University (2021 to 2025). My graduation project was HomeTech, a platform for household services such as plumbing, electrical work, carpentry and maintenance. I worked on the frontend, in vanilla JavaScript."
+      },
+      {
+        "label": "LOG 02",
+        "text": "I focused on modern frontend: JavaScript, React and React with TypeScript, including testing with Vitest. I built several React apps, three of them live. Now I'm learning the backend with Node.js, Express and MongoDB, and building full-stack apps with Next.js."
+      },
+      {
+        "label": "LOG 03",
+        "text": "I worked as a sales representative at compuMe (12/2025 to 04/2026), explaining laptop specs in plain language. That experience shapes how I write interfaces and explain technical decisions. In 2026 I joined a UI/UX scholarship at Nile University to strengthen the Figma-to-code workflow."
+      }
     ],
     "crewTitle": "How I work",
     "crew": [
@@ -678,29 +737,33 @@ Copy as is. Strings marked `TODO` are for the owner.
       "Programming Fundamentals Track (07/2024)"
     ],
     "languagesTitle": "Languages",
-    "languages": ["Arabic: native", "English: professional working proficiency"]
+    "languages": [
+      "Arabic: native",
+      "English: professional working proficiency"
+    ]
   },
   "contact": {
     "title": "Let's talk",
-    "intro": "Here are the quick answers, so you don't have to ask.",
-    "quick": [
-      { "label": "Availability", "value": "Immediate start" },
-      { "label": "Based in", "value": "Cairo, Egypt" },
-      { "label": "Languages", "value": "Arabic (native), English (professional)" },
-      { "label": "Military status", "value": "Exempted" }
-    ],
-    "actions": { "email": "Email", "linkedin": "LinkedIn", "whatsapp": "WhatsApp", "github": "GitHub", "open": "Open", "copyEmail": "Copy" },
+    "intro": "Have a role in mind or a question? Reach me whichever way is easiest for you.",
+    "actions": {
+      "email": "Email",
+      "linkedin": "LinkedIn",
+      "whatsapp": "WhatsApp",
+      "github": "GitHub",
+      "open": "Open",
+      "copyEmail": "Copy"
+    },
     "form": {
-      "title": "Or send a signal",
+      "title": "Or leave me a message",
       "name": "Your name",
       "contact": "Email or WhatsApp number (so I can reply)",
       "message": "Your message",
       "namePh": "Sara from Acme",
       "contactPh": "sara@acme.com",
       "messagePh": "We'd love to chat about a junior role",
-      "send": "Send signal",
+      "send": "Send message",
       "sending": "Sending...",
-      "success": "Signal received. I'll reply soon.",
+      "success": "Message received. I'll reply soon.",
       "errName": "Enter your name first",
       "errContact": "Add an email or number so I can reply",
       "errMessage": "Write a short message first (at least 10 characters)",
@@ -724,9 +787,20 @@ Copy as is. Strings marked `TODO` are for the owner.
     "full": "See the full interactive portfolio",
     "back": "Back to full site"
   },
-  "footer": { "built": "Built with Next.js, TypeScript and Tailwind.", "lastCommit": "Last commit", "hint": "Press Ctrl/Cmd + K" },
-  "notFound": { "title": "Lost in space", "text": "This page doesn't exist.", "back": "Back to launch pad" },
-  "meta": { "title": "Muhammad Nassar | Frontend Developer", "description": "Frontend developer in Cairo. React and TypeScript, now building full-stack apps with Next.js and Node.js. Available for immediate start." }
+  "footer": {
+    "built": "Built with Next.js, TypeScript and Tailwind.",
+    "lastCommit": "Last commit",
+    "hint": "Press Ctrl/Cmd + K"
+  },
+  "notFound": {
+    "title": "Lost in space",
+    "text": "This page doesn't exist.",
+    "back": "Back to launch pad"
+  },
+  "meta": {
+    "title": "Muhammad Nassar | Frontend Developer",
+    "description": "Frontend developer in Cairo. React and TypeScript, now building full-stack apps with Next.js and Node.js. Available for immediate start."
+  }
 }
 ```
 
@@ -736,95 +810,141 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
 
 ```json
 {
-  "nav": { "projects": "المشاريع", "skills": "المهارات", "about": "عني", "contact": "تواصل", "fast": "الوضع السريع", "lang": "English", "menu": "القائمة" },
-  "common": { "live": "عرض مباشر", "code": "الكود", "follow": "تابع التقدم", "listView": "عرض القائمة", "mapView": "عرض الخريطة", "backToTop": "العودة لمنصة الإطلاق", "copy": "نسخ", "copied": "تم النسخ", "close": "إغلاق", "skipToContent": "انتقل إلى المحتوى" },
+  "nav": {
+    "projects": "المشاريع",
+    "skills": "المهارات",
+    "about": "نبذة عني",
+    "contact": "تواصل معي",
+    "fast": "ملخص سريع",
+    "lang": "English",
+    "menu": "القائمة"
+  },
+  "common": {
+    "live": "جرّب التطبيق",
+    "code": "الكود",
+    "follow": "تابع التطوير",
+    "listView": "عرض كقائمة",
+    "mapView": "عرض كخريطة",
+    "backToTop": "العودة للأعلى",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "close": "إغلاق",
+    "skipToContent": "انتقل إلى المحتوى"
+  },
   "hero": {
-    "availability": "متاح للبدء فوراً",
+    "availability": "متاح للعمل فوراً",
     "title": "أهلاً، أنا محمد. أبني تطبيقات ويب يستخدمها الناس فعلاً.",
-    "subtitle": "مطوّر Frontend من القاهرة. أعمل بـ React وTypeScript، وأبني الآن تطبيقات Full-Stack بـ Next.js وNode.js.",
+    "subtitle": "مطوّر Frontend من القاهرة، أعمل بـ React وTypeScript، وأبني حالياً تطبيقات Full-Stack باستخدام Next.js وNode.js.",
     "ctaProjects": "شاهد مشاريعي",
     "ctaCv": "حمّل السيرة الذاتية",
     "ctaContact": "تواصل معي",
     "id": {
-      "label": "EXPLORER ID", "status": "ONLINE", "statusSr": "الحالة: متصل", "countdown": ["T-3", "T-2", "T-1"],
-      "role": "الدور", "roleValue": "مطوّر Frontend",
-      "mission": "المهمة", "missionValue": "بناء منتجات ويب نظيفة وموثوقة",
-      "available": "التوفّر", "availableValue": "فوراً",
-      "based": "المكان", "basedValue": "القاهرة، مصر"
+      "label": "EXPLORER ID",
+      "status": "ONLINE",
+      "statusSr": "الحالة: متصل",
+      "countdown": [
+        "T-3",
+        "T-2",
+        "T-1"
+      ],
+      "role": "المسمّى",
+      "roleValue": "مطوّر Frontend",
+      "mission": "هدفي",
+      "missionValue": "منتجات ويب متقنة يُعتمد عليها",
+      "available": "متاح",
+      "availableValue": "فوراً",
+      "based": "مقيم في",
+      "basedValue": "القاهرة، مصر",
+      "military": "الخدمة العسكرية",
+      "militaryValue": "معفى"
     },
-    "scroll": "انزل لتبدأ الرحلة"
+    "scroll": "انزل لتتعرف على أعمالي"
   },
   "projects": {
-    "title": "عالم مشاريعي",
-    "hint": "كل كوكب مشروع. اضغط على كوكب لتعرف ماذا يفعل.",
+    "title": "مشاريعي",
+    "hint": "كل كوكب هنا مشروع. اضغط على أي كوكب لتعرف تفاصيله.",
     "sun": "أنا",
-    "kinds": { "fullstack": "Full-stack", "frontend": "Frontend", "backend": "Backend" },
-    "status": { "done": "مكتمل", "in-progress": "قيد التنفيذ", "planned": "مخطط له" },
-    "labels": { "challenge": "التحدي", "did": "ماذا فعلت", "built": "ما الذي بنيته", "building": "ما الذي أبنيه", "screenshots": "لقطات الشاشة" },
+    "kinds": {
+      "fullstack": "Full-stack",
+      "frontend": "Frontend",
+      "backend": "Backend"
+    },
+    "status": {
+      "done": "مكتمل",
+      "in-progress": "قيد التطوير",
+      "planned": "قادم"
+    },
+    "labels": {
+      "challenge": "التحدي",
+      "did": "كيف حللته",
+      "built": "ما أنجزته",
+      "building": "ما أعمل عليه",
+      "screenshots": "صور من التطبيق"
+    },
     "items": {
       "nabd-masr": {
         "name": "نبض مصر",
-        "summary": "تطبيق أخبار عربي يعرض أخبار مصر المباشرة حسب التصنيف.",
-        "challenge": "واجهة الأخبار كانت تفشل كثيراً أو تعيد نتائج فارغة للتصنيفات العربية.",
-        "did": "صممت \"Smart Query\" ببحث منطقي (boolean) على endpoint بحث أوسع، فأصبح كل تصنيف عربي يعيد نتائج دقيقة بدل الأخطاء.",
-        "note": "العرض المباشر متوقف: الخطة المجانية لواجهة الأخبار تقبل الطلبات من localhost فقط، ومحاولاتي لتمريرها عبر proxy في بيئة الإنتاج لم تنجح. الكود ولقطات الشاشة موجودة على GitHub.",
+        "summary": "تطبيق أخبار بالعربية يعرض آخر أخبار مصر مرتبة حسب التصنيف.",
+        "challenge": "كان الـ API يفشل كثيراً أو يرجع نتائج فارغة مع التصنيفات العربية.",
+        "did": "صممت \"Smart Query\" يعتمد على البحث المنطقي (boolean) عبر endpoint أوسع، فأصبحت كل التصنيفات العربية ترجع نتائج دقيقة بدلاً من الأخطاء.",
+        "note": "العرض المباشر متوقف: الخطة المجانية للـ API لا تقبل إلا الطلبات من localhost، ولم تنجح محاولاتي لتمريرها عبر proxy على الإنتاج. الكود والصور متاحة على GitHub.",
         "built": [
-          "تطبيق أخبار عربي متجاوب لمصر باستخدام NewsAPI، مع فلترة حسب التصنيف وبحث وتقسيم صفحات.",
-          "استراتيجية \"Smart Query\" ببحث منطقي (boolean) أنهت أخطاء HTTP 500 المتكررة والنتائج الفارغة.",
-          "حالات تحميل بـ Skeleton، وdebounce للبحث 500ms، وصور بديلة، وشاشات أخطاء واضحة لانقطاع الشبكة وحدود الـ API."
+          "تطبيق أخبار متجاوب يعتمد على NewsAPI، مع فلترة حسب التصنيف وبحث وتقسيم للصفحات.",
+          "استراتيجية \"Smart Query\" بالبحث المنطقي (boolean) أنهت أخطاء HTTP 500 المتكررة والنتائج الفارغة.",
+          "شاشات تحميل Skeleton، وdebounce للبحث بمدة 500ms، وصور بديلة عند فشل التحميل، ورسائل خطأ واضحة عند انقطاع الشبكة أو تجاوز حدود الـ API."
         ]
       },
       "around-the-world": {
         "name": "Around The World",
-        "summary": "مستكشف لأكثر من 250 دولة مع تفاصيل كل دولة والدول المجاورة لها.",
-        "challenge": "الضغط على دولة مجاورة كان يفتح أحياناً دولة خاطئة.",
-        "did": "انتقلت من المطابقة بالاسم إلى رموز الدول الفريدة (cca3)، وأعدت تنظيم إدارة الحالة لإزالة وميض التحميل.",
+        "summary": "مستكشف لأكثر من 250 دولة، يعرض تفاصيل كل دولة وجيرانها.",
+        "challenge": "أحياناً كان الضغط على دولة مجاورة يفتح دولة أخرى غيرها.",
+        "did": "استبدلت المطابقة بالاسم برموز الدول الفريدة (cca3)، وأعدت تنظيم إدارة الحالة لإزالة الوميض أثناء التحميل.",
         "built": [
-          "مستكشف متجاوب لأكثر من 250 دولة عبر REST Countries API مع أنواع TypeScript صارمة للبيانات المتداخلة.",
-          "تخزين الاستجابات في Local Storage لتجنب تكرار الطلبات للزوّار العائدين."
+          "مستكشف متجاوب لأكثر من 250 دولة عبر REST Countries API، مع أنواع TypeScript صارمة للبيانات المتداخلة.",
+          "تخزين الاستجابات في Local Storage لتجنب تكرار الطلبات عند عودة الزائر."
         ]
       },
       "notenest": {
         "name": "NoteNest",
-        "summary": "واجهة برمجية (API) لإدارة الملاحظات: إنشاء وقراءة وتعديل وحذف، محفوظة في قاعدة بيانات.",
+        "summary": "API لإدارة الملاحظات: إنشاء وقراءة وتعديل وحذف، مع حفظها في قاعدة بيانات.",
         "built": [
-          "واجهة RESTful بـ Node.js وExpress.js تدعم عمليات CRUD الكاملة، مع حفظ البيانات في MongoDB عبر Mongoose.",
-          "Middleware مخصص ومعالجة مركزية للأخطاء لإرجاع ردود موحدة، وتم اختبارها عبر Postman."
+          "RESTful API مبني بـ Node.js وExpress.js يدعم عمليات CRUD كاملة، ويحفظ البيانات في MongoDB عبر نماذج Mongoose.",
+          "Middleware مخصص ومعالجة مركزية للأخطاء تضمن ردوداً موحدة، مع اختباره عبر Postman."
         ]
       },
       "forsa": {
         "name": "فرصة",
-        "summary": "تطبيق ويب للوظائف مبني بـ Next.js، يتصفح فيه المتقدمون الوظائف ويقدّمون عليها.",
-        "note": "أتعلم Next.js من خلال بناء هذا المشروع، لذلك يتغير باستمرار.",
+        "summary": "منصة وظائف مبنية بـ Next.js، يتصفح فيها الباحثون عن عمل الوظائف ويتقدمون لها.",
+        "note": "أتعلم Next.js من خلال بناء هذا المشروع، لذلك يتطور باستمرار.",
         "building": [
-          "قائمة الوظائف وصفحة تفاصيل كل وظيفة (مكتمل).",
+          "قائمة الوظائف وصفحة تفاصيل لكل وظيفة (اكتملت).",
           "التقديم على الوظائف، ولوحة تحكم للأدمن لإدارة الإعلانات، وتسجيل دخول بصلاحيات حسب الدور، مع قاعدة بيانات.",
-          "لاحقاً: ميزة بالذكاء الاصطناعي تقدّر مدى مناسبة المتقدم لكل وظيفة."
+          "لاحقاً: ميزة بالذكاء الاصطناعي تقيّم مدى ملاءمة المتقدم لكل وظيفة."
         ]
       },
       "kanban": {
         "name": "Kanban Board",
-        "summary": "لوحة مهام تضيف فيها المهام وتعدلها وتنقلها بين الأعمدة، بوضع فاتح وداكن.",
+        "summary": "لوحة مهام تضيف فيها المهام وتعدّلها وتنقلها بين الأعمدة، بوضعين فاتح وداكن.",
         "built": [
-          "لوحة مهام متجاوبة ويسهل الوصول إليها، مبنية من تصميم Frontend Mentor، وحالة المهام تُدار عبر Redux Toolkit.",
-          "نماذج تعديل معبأة مسبقاً، واختيار الحالة لنقل المهام، ووضع فاتح/داكن يعتمد على متغيرات CSS."
+          "لوحة مهام متجاوبة تراعي إمكانية الوصول، مبنية على تصميم من Frontend Mentor، وتُدار حالة المهام فيها بـ Redux Toolkit.",
+          "نماذج تعديل مملوءة مسبقاً، واختيار الحالة لنقل المهام، ووضع فاتح وداكن يعتمد على متغيرات CSS."
         ]
       },
       "caltrack": {
         "name": "CalTrack",
-        "summary": "تطبيق لتتبع السعرات الحرارية بنموذج يتفاعل مع إدخالك لحظياً.",
+        "summary": "تطبيق لحساب السعرات الحرارية، بنموذج إدخال يستجيب لما تكتبه فوراً.",
         "built": [
-          "إدارة حالة نموذج متعدد الشروط والإدخال اللحظي عبر useReducer وأنواع TypeScript صارمة.",
-          "تنقّل من جهة العميل عبر React Router وCSS Modules لكل مكوّن لمنع تعارض الأنماط."
+          "إدارة حالة نموذج متعدد الشروط والإدخال اللحظي باستخدام useReducer وأنواع TypeScript صارمة.",
+          "تنقّل بين الصفحات عبر React Router، وCSS Modules لكل مكوّن لمنع تعارض الأنماط."
         ]
       },
       "portfolio": {
-        "name": "هذا البورتفوليو",
-        "summary": "الموقع الذي تتصفحه الآن: بلغتين (العربية والإنجليزية)، سهل الوصول، مع نموذج تواصل يصلني عبر البريد وTelegram.",
+        "name": "هذا الموقع",
+        "summary": "الموقع الذي تتصفحه الآن: بلغتين، يراعي إمكانية الوصول، وفيه نموذج تواصل تصلني رسائله على البريد وTelegram.",
         "built": [
-          "Next.js App Router مع دعم كامل للعربية والإنجليزية، بما في ذلك الاتجاه من اليمين لليسار.",
-          "نظام كواكب وكوكبة مهارات تفاعلية بـ SVG، ولكل منهما عرض قائمة سهل الوصول.",
-          "مسار API للتواصل مع تحقق من البيانات وحد للطلبات وحماية من الرسائل المزعجة، ومختبر بـ Vitest وPlaywright."
+          "Next.js App Router مع دعم كامل للعربية والإنجليزية، بما فيه الاتجاه من اليمين لليسار.",
+          "نظام كواكب وكوكبة مهارات تفاعليان بـ SVG، ولكل منهما عرض بديل كقائمة.",
+          "API للتواصل يتحقق من البيانات ويحدّ من عدد الرسائل ويحمي من السبام، ومختبَر بـ Vitest وPlaywright."
         ]
       },
       "wasla": {
@@ -835,51 +955,63 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
   },
   "skills": {
     "title": "المهارات",
-    "hint": "كل نجمة مهارة. الخطوط تربط المهارات التي استخدمتها معاً في نفس المشروع. النجوم المفرّغة مهارات ما زلت أتعلمها. اضغط على نجمة.",
-    "usedIn": "استُخدمت في",
-    "learning": "أتعلمها حالياً",
+    "hint": "كل نجمة مهارة، والخطوط تربط المهارات التي استخدمتها معاً في مشروع واحد. النجوم المفرّغة مهارات ما زلت أتعلمها. اضغط على أي نجمة.",
+    "usedIn": "استخدمتها في",
+    "learning": "أتعلمها الآن",
     "notes": {
-      "nextNote": "أتعلم Next.js الآن وأطبقه مباشرة في فرصة وفي هذا البورتفوليو.",
-      "vitestNote": "تعلمته في مسار React with TypeScript وكتبت فيه اختبارات كثيرة.",
-      "figmaNote": "أقرأ تصاميم Figma وأنفذها كمطوّر. منحة UI/UX في جامعة النيل."
+      "nextNote": "أتعلم Next.js حالياً وأطبّقه مباشرة في فرصة وفي هذا الموقع.",
+      "vitestNote": "تعلمته ضمن مسار React with TypeScript، وكتبت به اختبارات كثيرة.",
+      "figmaNote": "أقرأ تصميمات Figma وأحوّلها إلى كود، وأدرس UI/UX في منحة جامعة النيل."
     },
     "groups": {
       "frontend": "Frontend",
-      "backend": "Backend وواجهات API",
-      "tools": "الاختبار والأدوات ونظام التشغيل",
-      "design": "التصميم والواجهات",
-      "learning": "أتعلمها حالياً",
+      "backend": "Backend وAPIs",
+      "tools": "الاختبارات والأدوات ونظام التشغيل",
+      "design": "التصميم وواجهات المستخدم",
+      "learning": "أتعلمها الآن",
       "university": "درستها في الجامعة"
     }
   },
   "rightNow": {
-    "title": "الآن",
-    "building": "أبني",
-    "learning": "أتعلّم",
-    "next": "المهمة القادمة",
-    "looking": { "label": "أبحث عن", "value": "وظيفة Junior في Frontend أو Full-Stack" },
+    "title": "حالياً",
+    "building": "أعمل على",
+    "learning": "أتعلم",
+    "next": "مشروعي القادم",
+    "looking": {
+      "label": "أبحث عن",
+      "value": "وظيفة Junior في Frontend أو Full-Stack"
+    },
     "updated": "TODO",
     "updatedLabel": "آخر تحديث",
     "comingSoon": "قريباً"
   },
   "about": {
-    "title": "عني",
+    "title": "نبذة عني",
     "log": [
-      { "label": "LOG 01", "text": "درست نظم المعلومات في جامعة بورسعيد (2021 إلى 2025). مشروع التخرج كان HomeTech، منصة للخدمات المنزلية مثل السباكة والكهرباء والنجارة والصيانة. عملت على الـ Frontend بـ JavaScript بدون مكتبات." },
-      { "label": "LOG 02", "text": "ركّزت على الـ Frontend الحديث: JavaScript وReact وReact مع TypeScript، بما في ذلك الاختبار بـ Vitest. بنيت عدة تطبيقات React، ثلاثة منها تعمل على الإنترنت. والآن أتعلم الـ Backend بـ Node.js وExpress وMongoDB، وأبني تطبيقات Full-Stack بـ Next.js." },
-      { "label": "LOG 03", "text": "عملت مندوب مبيعات في compuMe (12/2025 إلى 04/2026)، أشرح مواصفات اللابتوب بلغة بسيطة. هذه التجربة تؤثر في طريقة كتابتي للواجهات وشرحي للقرارات التقنية. وفي 2026 التحقت بمنحة UI/UX في جامعة النيل لأقوّي الانتقال من Figma إلى الكود." }
+      {
+        "label": "LOG 01",
+        "text": "درست نظم المعلومات في جامعة بورسعيد (2021–2025). كان مشروع تخرجي HomeTech، منصة لطلب الخدمات المنزلية مثل السباكة والكهرباء والنجارة والصيانة، وتولّيت فيه الجزء الخاص بالـ Frontend باستخدام JavaScript فقط دون أي مكتبات."
+      },
+      {
+        "label": "LOG 02",
+        "text": "ركّزت بعدها على الـ Frontend الحديث: JavaScript ثم React ثم React مع TypeScript، وتعلمت الاختبار بـ Vitest. بنيت عدة تطبيقات React، ثلاثة منها منشورة على الإنترنت. وأتعلم الآن الـ Backend بـ Node.js وExpress وMongoDB، وأبني تطبيقات Full-Stack بـ Next.js."
+      },
+      {
+        "label": "LOG 03",
+        "text": "عملت مندوب مبيعات في compuMe (من 12/2025 إلى 04/2026)، وكان دوري أن أشرح مواصفات اللابتوبات للعملاء بلغة بسيطة. علّمتني هذه التجربة كيف أكتب واجهات واضحة، وكيف أشرح القرارات التقنية لأي شخص. وفي 2026 التحقت بمنحة UI/UX في جامعة النيل لأقوّي مهارة تحويل تصميمات Figma إلى كود."
+      }
     ],
     "crewTitle": "طريقتي في العمل",
     "crew": [
-      "أحوّل تصاميم Figma إلى كود نظيف وسهل الصيانة.",
-      "أشرح القرارات التقنية بلغة بسيطة.",
-      "أشادت إدارة compuMe باحترافيتي وموثوقيتي والتزامي بالعمل الجماعي وخدمة العملاء."
+      "أحوّل تصميمات Figma إلى كود نظيف وسهل الصيانة.",
+      "أشرح القرارات التقنية بلغة بسيطة يفهمها الجميع.",
+      "أشادت بي إدارة compuMe لاحترافيتي والتزامي وتعاوني مع الفريق واهتمامي بالعملاء."
     ],
     "educationTitle": "التعليم",
     "education": [
-      "بكالوريوس نظم المعلومات، جامعة بورسعيد (09/2021 إلى 07/2025)",
-      "مواد ذات صلة: Data Structures وDatabases وWeb Development وNetworking Fundamentals وData Mining وInformation Retrieval",
-      "منحة UI/UX، جامعة النيل، عن بُعد (2026): التصميم المرتكز على المستخدم والانتقال من Figma إلى الواجهة"
+      "بكالوريوس نظم المعلومات، جامعة بورسعيد (09/2021 – 07/2025)",
+      "مواد دراسية ذات صلة: Data Structures وDatabases وWeb Development وNetworking Fundamentals وData Mining وInformation Retrieval",
+      "منحة UI/UX، جامعة النيل، أونلاين (2026): التصميم المتمحور حول المستخدم، وتحويل تصميمات Figma إلى واجهات"
     ],
     "certsTitle": "الشهادات",
     "certs": [
@@ -892,41 +1024,45 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
       "Programming Fundamentals Track (07/2024)"
     ],
     "languagesTitle": "اللغات",
-    "languages": ["العربية: لغة أم", "الإنجليزية: إجادة مهنية"]
+    "languages": [
+      "العربية: اللغة الأم",
+      "الإنجليزية: مستوى مهني"
+    ]
   },
   "contact": {
-    "title": "لنتحدث",
-    "intro": "هذه إجابات سريعة، حتى لا تحتاج للسؤال.",
-    "quick": [
-      { "label": "التوفّر", "value": "بدء فوري" },
-      { "label": "المكان", "value": "القاهرة، مصر" },
-      { "label": "اللغات", "value": "العربية (لغة أم)، الإنجليزية (مهنية)" },
-      { "label": "الموقف من التجنيد", "value": "معفى" }
-    ],
-    "actions": { "email": "البريد الإلكتروني", "linkedin": "LinkedIn", "whatsapp": "واتساب", "github": "GitHub", "open": "افتح", "copyEmail": "انسخ" },
+    "title": "تواصل معي",
+    "intro": "عندك فرصة عمل أو سؤال؟ راسلني بالطريقة الأسهل لك.",
+    "actions": {
+      "email": "البريد الإلكتروني",
+      "linkedin": "LinkedIn",
+      "whatsapp": "واتساب",
+      "github": "GitHub",
+      "open": "افتح",
+      "copyEmail": "انسخ"
+    },
     "form": {
-      "title": "أو أرسل إشارة",
+      "title": "أو اترك لي رسالة",
       "name": "اسمك",
-      "contact": "بريدك أو رقم واتساب (لأرد عليك)",
+      "contact": "بريدك أو رقم واتساب (لأتمكن من الرد)",
       "message": "رسالتك",
       "namePh": "سارة من شركة Acme",
       "contactPh": "sara@acme.com",
       "messagePh": "نود التحدث معك بخصوص وظيفة Junior",
-      "send": "أرسل إشارة",
-      "sending": "جارٍ الإرسال...",
-      "success": "وصلت إشارتك. سأرد قريباً.",
-      "errName": "اكتب اسمك أولاً",
-      "errContact": "أضف بريداً أو رقماً لأتمكن من الرد",
-      "errMessage": "اكتب رسالة قصيرة أولاً (10 أحرف على الأقل)",
-      "errSend": "تعذر الإرسال. راسلني مباشرة على",
-      "errRate": "رسائل كثيرة. حاول مرة أخرى بعد دقائق."
+      "send": "إرسال",
+      "sending": "جارٍ الإرسال…",
+      "success": "وصلتني رسالتك، وسأرد عليك قريباً.",
+      "errName": "اكتب اسمك",
+      "errContact": "أضف بريدك أو رقمك لأتمكن من الرد",
+      "errMessage": "اكتب رسالة قصيرة (10 أحرف على الأقل)",
+      "errSend": "لم تُرسل الرسالة. راسلني مباشرة على",
+      "errRate": "أرسلت رسائل كثيرة. حاول مرة أخرى بعد دقائق."
     }
   },
   "fast": {
     "title": "ملخص سريع",
-    "military": "الموقف من التجنيد: معفى",
-    "topProjects": "أهم المشاريع",
-    "inProgress": "قيد التنفيذ",
+    "military": "الخدمة العسكرية: معفى",
+    "topProjects": "أبرز المشاريع",
+    "inProgress": "قيد التطوير",
     "skills": "المهارات",
     "experience": "الخبرة والتعليم",
     "experienceItems": [
@@ -935,12 +1071,23 @@ Same keys as section 13. Technical terms stay in English. **The owner reviews th
       "منحة UI/UX، جامعة النيل (2026)"
     ],
     "contact": "تواصل",
-    "full": "شاهد البورتفوليو التفاعلي الكامل",
+    "full": "شاهد النسخة التفاعلية الكاملة",
     "back": "العودة للموقع الكامل"
   },
-  "footer": { "built": "مبني بـ Next.js وTypeScript وTailwind.", "lastCommit": "آخر commit", "hint": "اضغط Ctrl/Cmd + K" },
-  "notFound": { "title": "تُهت في الفضاء", "text": "هذه الصفحة غير موجودة.", "back": "العودة لمنصة الإطلاق" },
-  "meta": { "title": "محمد نصار | مطوّر Frontend", "description": "مطوّر Frontend من القاهرة. React وTypeScript، وأبني الآن تطبيقات Full-Stack بـ Next.js وNode.js. متاح للبدء فوراً." }
+  "footer": {
+    "built": "صُمّم وبُني بـ Next.js وTypeScript وTailwind.",
+    "lastCommit": "آخر commit",
+    "hint": "اضغط Ctrl/Cmd + K"
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "text": "يبدو أن هذه الصفحة تاهت في الفضاء.",
+    "back": "العودة للرئيسية"
+  },
+  "meta": {
+    "title": "محمد نصار | مطوّر Frontend",
+    "description": "مطوّر Frontend من القاهرة. React وTypeScript، وأبني الآن تطبيقات Full-Stack بـ Next.js وNode.js. متاح للبدء فوراً."
+  }
 }
 ```
 
